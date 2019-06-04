@@ -11,7 +11,7 @@ class Csv(object):
         df["年"] = df["日期"].dt.year
         df["月"] = df["日期"].dt.month
 
-        month_groups = df.groupby(["年", "月"])        
+        month_groups = df.groupby(["年", "月"])
         month_groups.min().reset_index().to_csv("000898_month_min.csv", sep=',', encoding='gb2312')
         month_groups.max().reset_index().to_csv("000898_month_max.csv", sep=',', encoding='gb2312')
 
