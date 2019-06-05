@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import matplotlib.pyplot as plt
 from jqdatasdk import *
 plt.rcParams['font.family']=['SimHei']
-auth('13958111292','julianchenyi1')
+auth('**','**')
 
 
 count=get_query_count()

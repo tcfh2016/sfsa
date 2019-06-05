@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from jqdatasdk import *
 plt.rcParams['font.family']=['SimHei']
-auth('13958111292','julianchenyi1')
+auth('**','**')
 
 # 000001.XSHG 	上证指数
 # 000016.XSHG 	上证50

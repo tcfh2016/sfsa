@@ -1,12 +1,16 @@
 import argparse
-import local.balance_sheet as balance_sheet
+import local.balance as balance
+import local.income as income
 import local.csv as csv
 
 def main():
     opt = parse_args()
 
-    if opt.option == 'balancesheet':
-        par = balance_sheet.BalanceSheetAnalysis(opt)
+    if opt.option == 'balance':
+        par = balance.BalanceSheetAnalysis(opt)
+        par.proc()
+    elif opt.option == 'income':
+        par = income.IncomeStatementAnalysis(opt)
         par.proc()
     elif opt.option == 'yieldcurve':
         p = csv.Csv(opt)
@@ -20,7 +24,7 @@ def parse_args():
     arg_parser.add_argument("--file", required=True,
                         help="bin file which needed to be parsed.")
     arg_parser.add_argument("--option", required=True,
-                        help="balancesheet/yieldcurve.")
+                        help="balance/yieldcurve/income.")
 
     return arg_parser.parse_args()
 

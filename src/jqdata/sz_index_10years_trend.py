@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 from jqdatasdk import *
 plt.rcParams['font.family']=['SimHei']
-auth('13958111292','julianchenyi1')
+auth('**','**')
 
 # 000001.XSHG 	上证指数
 indexs_2009 = get_index_stocks('000001.XSHG', date='2009-05-15')
