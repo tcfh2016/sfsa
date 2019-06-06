@@ -1,0 +1,2 @@
+class ReportAnalyzer(obect):
+    pass

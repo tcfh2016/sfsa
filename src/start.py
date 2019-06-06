@@ -1,17 +1,17 @@
 import argparse
-import local.balance as balance
-import local.income as income
-import local.csv as csv
+import report.balance as balance
+import report.income as income
+import trade.csv as csv
 
 def main():
     opt = parse_args()
 
     if opt.option == 'balance':
-        par = balance.BalanceSheetAnalysis(opt)
-        par.proc()
+        par = balance.BalanceSheetAnalyzer(opt.file)
+        par.analize()
     elif opt.option == 'income':
-        par = income.IncomeStatementAnalysis(opt)
-        par.proc()
+        par = income.IncomeStatementAnalyzer(opt.file)
+        par.analize()
     elif opt.option == 'yieldcurve':
         p = csv.Csv(opt)
         p.proc()

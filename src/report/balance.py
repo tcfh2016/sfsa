@@ -1,26 +1,17 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import local.common as common
+import report.analyzer as analyzer
 
-class BalanceSheetAnalysis(object):
-    def __init__(self, opt):
-        self.filename = opt.file
-        self.numberic_df = np.NaN
+class BalanceSheetAnalyzer(analyzer.Analyzer):
+    def __init__(self, file_name):
+        analyzer.Analyzer.__init__(self, file_name)
+        
         self.asset_df = np.NaN
         self.debt_df = np.NaN
         self.equity_df = np.NaN
 
-    def get_numberic_sheet(self):
-        # 读取原始数据，并获取索引信息，用于之后的数据计算
-        df = pd.read_csv(self.filename, encoding="gb2312", index_col = 0, header = 0,
-                         dtype=np.object)
-
-        self.numberic_df = common.convert_to_numeric(df)
-
-    def calc(self):
-        self.get_numberic_sheet()
-        #print(self.numberic_df)
+    def proc(self):
 
         # 选择最近一年 > 0的那些项目。
         df = self.numberic_df

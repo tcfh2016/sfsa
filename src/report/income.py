@@ -1,25 +1,15 @@
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
-import local.common as common
+import report.analyzer as analyzer
 
-class IncomeStatementAnalysis(object):
-    def __init__(self, opt):
-        self.filename = opt.file
-        self.numberic_df = np.NaN
+class IncomeStatementAnalyzer(analyzer.Analyzer):
+    def __init__(self, file_name):
+        analyzer.Analyzer.__init__(self, file_name)
+
         self.income_df = np.NaN
 
-    def get_numberic_sheet(self):
-        # 读取原始数据，并获取索引信息，用于之后的数据计算
-        df = pd.read_csv(self.filename, encoding="gb2312", index_col = 0, header = 0,
-                         dtype=np.object)
-        #print(df)
-        self.numberic_df = common.convert_to_numeric(df)
-        print(self.numberic_df)
-
     def calc_percentage(self):
-        self.get_numberic_sheet()
-
         df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
         #df = df[df['2018-12-31'] > 0]，这种方式与下面这种方式等价
         df = df[df[df.columns[0]] > 0]
