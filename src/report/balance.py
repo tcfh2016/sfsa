@@ -6,12 +6,12 @@ import report.analyzer as analyzer
 class BalanceSheetAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
-        
+
         self.asset_df = np.NaN
         self.debt_df = np.NaN
         self.equity_df = np.NaN
 
-    def proc(self):
+    def calc(self):
 
         # 选择最近一年 > 0的那些项目。
         df = self.numberic_df
@@ -80,5 +80,5 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
 
     def proc(self):
         self.calc()
-        #self.plot(0.1)
+        self.plot(0.1)
         self.asset_estimate()
