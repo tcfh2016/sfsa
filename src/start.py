@@ -1,19 +1,14 @@
 import argparse
-import report.balance as balance
-import report.income as income
+import report.report_analyzer as report_analyzer
 import trade.csv as csv
 
 def main():
-    opt = parse_args()
+    args = parse_args()
 
-    if opt.option == 'balance':
-        par = balance.BalanceSheetAnalyzer(opt.file)
-        par.analize()
-    elif opt.option == 'income':
-        par = income.IncomeStatementAnalyzer(opt.file)
-        par.analize()
-    elif opt.option == 'yieldcurve':
-        p = csv.Csv(opt)
+    if args.option == 'balance' or args.option == 'income':
+        report_analyzer.ReportAnalyzer(args).start()
+    elif args.option == 'yieldcurve':
+        p = csv.Csv(args)
         p.proc()
     else:
         print ("Invalid Option!")
@@ -21,10 +16,13 @@ def main():
 def parse_args():
     arg_parser = argparse.ArgumentParser()
 
-    arg_parser.add_argument("--file", required=True,
-                        help="bin file which needed to be parsed.")
-    arg_parser.add_argument("--option", required=True,
-                        help="balance/yieldcurve/income.")
+    group = arg_parser.add_mutually_exclusive_group()
+    group.add_argument("-f", "--file", #required=True,
+                             help="file needed to be parsed.")
+    group.add_argument("-s", "--stock", #required=True,
+                             help="stock No.")
+    arg_parser.add_argument("--option", required=True, choices=['balance', 'income', 'yieldcurve'],
+                             help="options.")
 
     return arg_parser.parse_args()
 

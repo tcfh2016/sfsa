@@ -11,8 +11,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         self.debt_df = np.NaN
         self.equity_df = np.NaN
 
-    def calc(self):
-
+    def choose_items(self):
         # 选择最近一年 > 0的那些项目。
         df = self.numberic_df
         df = df[df[df.columns[0]] > 0]
@@ -79,6 +78,6 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         print(df_asset_es.T)
 
     def proc(self):
-        self.calc()
+        self.choose_items()
         self.plot(0.1)
         self.asset_estimate()

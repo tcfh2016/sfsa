@@ -9,7 +9,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
 
         self.income_df = np.NaN
 
-    def calc_percentage(self):
+    def choose_items(self):
         df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
         #df = df[df['2018-12-31'] > 0]，这种方式与下面这种方式等价
         df = df[df[df.columns[0]] > 0]
@@ -38,6 +38,6 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         income_es = pd.DataFrame(self.numberic_df.loc['营业利润(万元)'])
 
     def proc(self):
-        self.calc_percentage()
+        self.choose_items()
         self.plot(0.05)
         self.income_estimate()
