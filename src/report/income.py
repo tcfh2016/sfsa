@@ -6,7 +6,8 @@ import report.analyzer as analyzer
 class IncomeStatementAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
-
+        self.pre()
+        
         self.income_df = np.NaN
 
     def choose_items(self):
@@ -34,10 +35,6 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         income_plot.set_xticklabels(df_forplot.index, rotation=30)
         plt.show()
 
-    def income_estimate(self):
-        income_es = pd.DataFrame(self.numberic_df.loc['营业利润(万元)'])
-
     def proc(self):
         self.choose_items()
         self.plot(0.05)
-        self.income_estimate()

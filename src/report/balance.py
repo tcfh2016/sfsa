@@ -6,7 +6,8 @@ import report.analyzer as analyzer
 class BalanceSheetAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
-
+        self.pre()
+        
         self.asset_df = np.NaN
         self.debt_df = np.NaN
         self.equity_df = np.NaN

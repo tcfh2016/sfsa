@@ -41,7 +41,6 @@ class Analyzer(object):
     def post(self):
         pass
 
-    def analize(self):
-        self.pre()
+    def analize(self):        
         self.proc()
         self.post()
