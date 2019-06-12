@@ -7,14 +7,13 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
         self.pre()
-        
+
         self.income_df = np.NaN
 
     def choose_items(self):
         df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
         #df = df[df['2018-12-31'] > 0]，这种方式与下面这种方式等价
-        df = df[df[df.columns[0]] > 0]
-        print(df)
+        df = df[df[df.columns[0]] > 0]        
         self.income_df = df
 
     def plot(self, percent_filter):
@@ -35,6 +34,6 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         income_plot.set_xticklabels(df_forplot.index, rotation=30)
         plt.show()
 
-    def proc(self):
+    def ratio_analyze(self):
         self.choose_items()
         self.plot(0.05)

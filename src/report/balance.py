@@ -7,7 +7,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
         self.pre()
-        
+
         self.asset_df = np.NaN
         self.debt_df = np.NaN
         self.equity_df = np.NaN
@@ -26,7 +26,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         #print(self.debt_df)
         # 滤除股东权益部分的数据
         self.equity_df = df['实收资本(或股本)(万元)':'所有者权益(或股东权益)合计(万元)']
-        print(self.equity_df)
+        #print(self.equity_df)
 
     def plot(self, percent_filter):
         plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -56,29 +56,6 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         dp.set_xticklabels(asset_df_forplot.index, rotation=30)
         plt.show()
 
-    def asset_estimate(self):
-        #print(self.asset_df.loc['流动资产合计(万元)'])
-        df_asset_es = pd.DataFrame(self.asset_df.loc['资产总计(万元)'])
-        df_asset_es['存货(万元)'] = self.asset_df.loc['存货(万元)']
-        df_asset_es['流动资产合计(万元)'] = self.asset_df.loc['流动资产合计(万元)']
-        df_asset_es['负债合计(万元)'] = self.debt_df.loc['负债合计(万元)']
-        df_asset_es['流动负债合计(万元)'] = self.debt_df.loc['流动负债合计(万元)']
-        df_asset_es['实收资本(或股本)(万元)'] = self.equity_df.loc['实收资本(或股本)(万元)']
-
-        # 营运资金
-        df_asset_es['营运资金'] = df_asset_es['流动资产合计(万元)'] - df_asset_es['流动负债合计(万元)']
-        # 酸性测试
-        df_asset_es['酸性测试'] = ['True' if x>0 else 'False' for x in df_asset_es['营运资金'] - df_asset_es['存货(万元)']]
-        # 每股清算价值 ~ 流动资产价值
-        df_asset_es['流动资产价值'] = df_asset_es['营运资金'] / df_asset_es['实收资本(或股本)(万元)']
-        # 每股账面价值
-        df_asset_es['账面价值'] = (df_asset_es['资产总计(万元)'] - df_asset_es['负债合计(万元)']) / df_asset_es['实收资本(或股本)(万元)']
-        # 资产负债率
-        df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
-        df_asset_es.T.to_csv("assert_estimate.csv", sep=',', encoding='gb2312')
-        print(df_asset_es.T)
-
-    def proc(self):
+    def ratio_analyze(self):
         self.choose_items()
         self.plot(0.1)
-        self.asset_estimate()

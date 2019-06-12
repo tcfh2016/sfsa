@@ -31,16 +31,18 @@ class Analyzer(object):
                          dtype=np.object)
         #print(df)
         self.numberic_df = self.convert_to_numeric(df)
-        print(self.numberic_df)
+        #print(self.numberic_df)
 
-    # 报表分析
-    def proc(self):
+    # 报表比率分析
+    def ratio_analyze(self):
         pass
 
     # 报表后处理，进行一些正式数据分析后的处理工作。
     def post(self):
         pass
 
-    def analize(self):        
-        self.proc()
-        self.post()
+    # 通用的分析框架
+    def analize(self):
+        self.ratio_analyze()
+        #self.proc()
+        #self.post()
