@@ -1,15 +1,14 @@
 import argparse
 import report.report_analyzer as report_analyzer
-import trade.csv as csv
+import trade.trade_analyzer as trade_analyzer
 
 def main():
     args = parse_args()
 
     if args.option == 'balance' or args.option == 'income':
         report_analyzer.ReportAnalyzer(args).start()
-    elif args.option == 'yieldcurve':
-        p = csv.Csv(args)
-        p.proc()
+    elif args.option == 'trade':
+        trade_analyzer.TradeAnalyzer(args).start()
     else:
         print ("Invalid Option!")
 
@@ -21,7 +20,8 @@ def parse_args():
                              help="file needed to be parsed.")
     group.add_argument("-s", "--stock", #required=True,
                              help="stock No.")
-    arg_parser.add_argument("--option", required=True, choices=['balance', 'income', 'yieldcurve'],
+    arg_parser.add_argument("-o", "--option", required=True,
+                             choices=['balance', 'income', 'trade'],
                              help="options.")
 
     return arg_parser.parse_args()
