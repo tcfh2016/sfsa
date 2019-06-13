@@ -37,6 +37,10 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         asset_df_forplot = asset_df_forplot.T
         print(asset_df_forplot)
         ap = asset_df_forplot.plot()
+        ap_vals = ap.get_yticks()
+        ap.set_yticklabels(['{:,.2%}'.format(x) for x in ap_vals])
+        ap.set_xticks(range(len(asset_df_forplot.index)))
+        ap.set_xticklabels(asset_df_forplot.index, rotation=30)
 
         # 选择负债部分超过一定百分比的项目，并作图
         debt_df_percentage = self.debt_df[:] / self.debt_df.loc['负债合计(万元)']
@@ -44,12 +48,6 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         debt_df_forplot = debt_df_forplot.T
         print(debt_df_forplot)
         dp = debt_df_forplot.plot()
-
-        ap_vals = ap.get_yticks()
-        ap.set_yticklabels(['{:,.2%}'.format(x) for x in ap_vals])
-        ap.set_xticks(range(len(asset_df_forplot.index)))
-        ap.set_xticklabels(asset_df_forplot.index, rotation=30)
-
         dp_vals = dp.get_yticks()
         dp.set_yticklabels(['{:,.2%}'.format(x) for x in dp_vals])
         dp.set_xticks(range(len(asset_df_forplot.index)))

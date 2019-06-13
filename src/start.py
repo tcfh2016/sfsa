@@ -20,9 +20,16 @@ def parse_args():
                              help="file needed to be parsed.")
     group.add_argument("-s", "--stock", #required=True,
                              help="stock No.")
+
     arg_parser.add_argument("-o", "--option", required=True,
                              choices=['balance', 'income', 'trade'],
                              help="options.")
+    arg_parser.add_argument("-p", "--plot",
+                             help="plot option.")
+    arg_parser.add_argument("-sd", "--startdate",
+                             help="specify the start date.")
+    arg_parser.add_argument("-ed", "--enddate",
+                             help="specify the end date.")
 
     return arg_parser.parse_args()
 

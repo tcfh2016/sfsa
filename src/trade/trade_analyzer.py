@@ -1,5 +1,6 @@
 import os
 import pandas as pd
+import matplotlib.pyplot as plt
 
 class TradeAnalyzer(object):
     def __init__(self, args):
@@ -11,9 +12,10 @@ class TradeAnalyzer(object):
         self.min_value_in_month_file = args.stock + "_month_min.csv"
         self.max_value_in_month_file = args.stock + "_month_max.csv"
         self.min_max_in_month_file =  args.stock + "_month_min_max.csv"
+        self.min_max_df = None
 
-        #self.start_date = None
-        #self.end_date = None
+        self.start_date = args.startdate
+        self.end_date = args.enddate
 
     def read_from_file(self):
         self.df = pd.read_csv(self.filename,
@@ -34,17 +36,31 @@ class TradeAnalyzer(object):
         month_groups.max().reset_index().to_csv(self.max_value_in_month_file, sep=',', encoding='gb2312')
 
         min_max_df = month_groups.min()
+        min_max_df.rename(columns={'收盘价':'最低价'}, inplace=True)
         min_max_df['最高价'] = month_groups.max()['收盘价']
+        min_max_df['日期'] = min_max_df['日期'].dt.to_period('M')
         min_max_df.to_csv(self.min_max_in_month_file, sep=',', encoding='gb2312')
+        #min_max_df.index = min_max_df['日期']
+        min_max_df = min_max_df.set_index('日期', drop=True)
+        self.min_max_df = min_max_df
 
-        #print(month_groups.min())
-        #print(month_groups.max())
         print(min_max_df)
-        print(month_groups)
+        print(min_max_df.dtypes)
 
     def plot(self):
-        pass
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+
+        plot_df = self.min_max_df
+        if self.start_date != None and self.end_date != None:
+            plot_df = self.min_max_df[self.start_date:self.end_date]
+
+        p = plot_df.plot()
+        #p.set_xticks(range(len(plot_df.index)))
+        #p.set_xticklabels(plot_df.index, rotation=30)
+
+        plt.show()
 
     def start(self):
         self.read_from_file()
         self.output_to_file()
+        self.plot()
