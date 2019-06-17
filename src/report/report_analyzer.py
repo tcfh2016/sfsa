@@ -5,18 +5,12 @@ import report.income as income
 
 class ReportAnalyzer():
     def __init__(self, args):
+        self.single_stock = True
+        if (len(args.stock) > 1):
+            self.single_stock = False
         self.args = args
-        self.balance_filename = "zcfzb" + args.stock + ".csv"
-        self.income_filename = "lrb" + args.stock + ".csv"
         self.balance_df = None
         self.income_df = None
-
-        if os.access(self.balance_filename, os.R_OK) and os.access(self.income_filename, os.R_OK):
-            self.balance_analyzer = balance.BalanceSheetAnalyzer(self.balance_filename)
-            self.income_analyzer = income.IncomeStatementAnalyzer(self.income_filename)
-        else:
-            print("Can't find {} and {}".format(self.balance_filename, self.income_filename))
-            os._exit(0)
 
     def estimate_profitability(self):
         income_es = pd.DataFrame(self.income_df.loc['营业利润(万元)'])
@@ -52,15 +46,36 @@ class ReportAnalyzer():
         df_asset_es.T.to_csv("assert_estimate.csv", sep=',', encoding='gb2312')
         print(df_asset_es.T)
 
-    def start(self):
-        self.balance_df = self.balance_analyzer.numberic_df
-        self.income_df = self.income_analyzer.numberic_df
+    def prepare(self):
+        if (self.single_stock):
+            self.balance_filename = "zcfzb" + self.args.stock[0] + ".csv"
+            self.income_filename = "lrb" + self.args.stock[0] + ".csv"
 
-        if (self.args.option == 'balance'):
-            self.balance_analyzer.analize()
-            self.estimate_asset()
-        elif (self.args.option == 'income'):
-            self.income_analyzer.analize()
-            self.estimate_profitability()
+            if os.access(self.balance_filename, os.R_OK) and os.access(self.income_filename, os.R_OK):
+                self.balance_analyzer = balance.BalanceSheetAnalyzer(self.balance_filename)
+                self.income_analyzer = income.IncomeStatementAnalyzer(self.income_filename)
+            else:
+                print("Can't find {} and {}".format(self.balance_filename, self.income_filename))
+                os._exit(0)
         else:
-            print("Invalid option !")
+            pass
+
+    def analize(self):
+        if (self.single_stock):
+            self.balance_df = self.balance_analyzer.numberic_df
+            self.income_df = self.income_analyzer.numberic_df
+
+            if (self.args.option == 'balance'):
+                self.balance_analyzer.analize()
+                self.estimate_asset()
+            elif (self.args.option == 'income'):
+                self.income_analyzer.analize()
+                self.estimate_profitability()
+            else:
+                print("Invalid option !")
+        else:
+            pass
+
+    def start(self):
+        self.prepare()
+        self.analize()

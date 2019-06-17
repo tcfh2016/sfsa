@@ -18,8 +18,8 @@ def parse_args():
     group = arg_parser.add_mutually_exclusive_group()
     group.add_argument("-f", "--file", #required=True,
                              help="file needed to be parsed.")
-    group.add_argument("-s", "--stock", #required=True,
-                             help="stock No.")
+    group.add_argument("-s", "--stock", nargs='+',
+                             help="support one or more stocks.")
 
     arg_parser.add_argument("-o", "--option", required=True,
                              choices=['balance', 'income', 'trade'],
