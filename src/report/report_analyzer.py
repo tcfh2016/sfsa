@@ -5,6 +5,7 @@ import report.income as income
 
 class ReportAnalyzer():
     def __init__(self, args, data_path):
+        self.data_path = data_path
         self.single_stock = True
         if (len(args.stock) > 1):
             self.single_stock = False
@@ -48,14 +49,16 @@ class ReportAnalyzer():
 
     def prepare(self):
         if (self.single_stock):
-            self.balance_filename = "zcfzb" + self.args.stock[0] + ".csv"
-            self.income_filename = "lrb" + self.args.stock[0] + ".csv"
+            balance_filename = "zcfzb" + self.args.stock[0] + ".csv"
+            income_filename = "lrb" + self.args.stock[0] + ".csv"
+            self.balance_datafile = os.path.join(self.data_path, balance_filename)
+            self.income_datafile = os.path.join(self.data_path, income_filename)
 
-            if os.access(self.balance_filename, os.R_OK) and os.access(self.income_filename, os.R_OK):
-                self.balance_analyzer = balance.BalanceSheetAnalyzer(self.balance_filename)
-                self.income_analyzer = income.IncomeStatementAnalyzer(self.income_filename)
+            if os.access(self.balance_datafile, os.R_OK) and os.access(self.income_datafile, os.R_OK):
+                self.balance_analyzer = balance.BalanceSheetAnalyzer(self.balance_datafile)
+                self.income_analyzer = income.IncomeStatementAnalyzer(self.income_datafile)
             else:
-                print("Can't find {} and {}".format(self.balance_filename, self.income_filename))
+                print("Can't find {} and {}".format(self.balance_datafile, self.income_datafile))
                 os._exit(0)
         else:
             pass
