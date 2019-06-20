@@ -3,22 +3,24 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 class TradeAnalyzer(object):
-    def __init__(self, args):
-        self.filename = args.stock + ".csv"
-        if (not os.access(self.filename, os.R_OK)):
-            print("Can't find {}...".format(self.filename))
+    def __init__(self, args, data_path):
+        filename = args.stock[0] + ".csv"
+        self.datafile = os.path.join(data_path, filename)
+
+        if (not os.access(self.datafile, os.R_OK)):
+            print("Can't find {}...".format(self.datafile))
             os._exit(0)
 
-        self.min_value_in_month_file = args.stock + "_month_min.csv"
-        self.max_value_in_month_file = args.stock + "_month_max.csv"
-        self.min_max_in_month_file =  args.stock + "_month_min_max.csv"
+        self.min_value_in_month_file = args.stock[0] + "_month_min.csv"
+        self.max_value_in_month_file = args.stock[0] + "_month_max.csv"
+        self.min_max_in_month_file =  args.stock[0] + "_month_min_max.csv"
         self.min_max_df = None
 
         self.start_date = args.startdate
         self.end_date = args.enddate
 
     def read_from_file(self):
-        self.df = pd.read_csv(self.filename,
+        self.df = pd.read_csv(self.datafile,
                          encoding="gb2312",
                          dayfirst=True,
                          usecols = ["日期", "收盘价"])

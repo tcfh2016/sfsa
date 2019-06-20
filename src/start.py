@@ -1,14 +1,18 @@
+import os
 import argparse
 import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
 
 def main():
+    current_path = os.path.split(os.path.realpath(__file__))[0]
     args = parse_args()
 
     if args.option == 'balance' or args.option == 'income':
-        report_analyzer.ReportAnalyzer(args).start()
+        report_data_path = os.path.join(current_path, "data", "report")
+        report_analyzer.ReportAnalyzer(args, report_data_path).start()
     elif args.option == 'trade':
-        trade_analyzer.TradeAnalyzer(args).start()
+        trade_data_path = os.path.join(current_path, "data", "trade")
+        trade_analyzer.TradeAnalyzer(args, trade_data_path).start()
     else:
         print ("Invalid Option!")
 

@@ -4,7 +4,7 @@ import report.balance as balance
 import report.income as income
 
 class ReportAnalyzer():
-    def __init__(self, args):
+    def __init__(self, args, data_path):
         self.single_stock = True
         if (len(args.stock) > 1):
             self.single_stock = False
