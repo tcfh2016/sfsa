@@ -13,6 +13,9 @@ class ReportAnalyzer():
         self.balance_df = None
         self.income_df = None
 
+        self.balance_analyzer = []
+        self.income_analyzer = []
+
     def estimate_profitability(self):
         income_es = pd.DataFrame(self.income_df.loc['营业利润(万元)'])
         income_es['资产总计(万元)'] = self.balance_df.loc['资产总计(万元)']
@@ -48,20 +51,18 @@ class ReportAnalyzer():
         print(df_asset_es.T)
 
     def prepare(self):
-        if (self.single_stock):
+        for stock in self.args.stock:
             balance_filename = "zcfzb" + self.args.stock[0] + ".csv"
             income_filename = "lrb" + self.args.stock[0] + ".csv"
-            self.balance_datafile = os.path.join(self.data_path, balance_filename)
-            self.income_datafile = os.path.join(self.data_path, income_filename)
+            balance_datafile = os.path.join(self.data_path, balance_filename)
+            income_datafile = os.path.join(self.data_path, income_filename)
 
-            if os.access(self.balance_datafile, os.R_OK) and os.access(self.income_datafile, os.R_OK):
-                self.balance_analyzer = balance.BalanceSheetAnalyzer(self.balance_datafile)
-                self.income_analyzer = income.IncomeStatementAnalyzer(self.income_datafile)
+            if os.access(balance_datafile, os.R_OK) and os.access(income_datafile, os.R_OK):
+                self.balance_analyzer.append(balance.BalanceSheetAnalyzer(balance_datafile))
+                self.income_analyzer.append(income.IncomeStatementAnalyzer(income_datafile))
             else:
                 print("Can't find {} and {}".format(self.balance_datafile, self.income_datafile))
                 os._exit(0)
-        else:
-            pass
 
     def analize(self):
         if (self.single_stock):
