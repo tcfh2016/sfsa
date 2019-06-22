@@ -36,6 +36,7 @@ def main():
     current_path = os.path.split(os.path.realpath(__file__))[0]
 
     # 格式转换
+    data_file_path = os.path.join(current_path, "data", "report")
     data_file_path = os.path.join(current_path, "data", "trade")
     convert_file_format(data_file_path)
 
