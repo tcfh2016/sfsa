@@ -1,10 +1,45 @@
 import os
+import chardet
 import argparse
 import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
 
+def detect_encoding(file):
+    with open(file, 'rb') as f:
+        content_bytes = f.read()
+
+    detected = chardet.detect(content_bytes)
+    encoding_format = detected['encoding']
+    print(f"{file}: detected as {encoding_format}.")
+    return encoding_format
+
+def convert_to_utf8(filename):
+    encoding_format = detect_encoding(filename)
+    if encoding_format == 'utf-8-sig' or encoding_format == 'UTF-8-SIG':
+        return
+
+    with open(filename, 'r', encoding='gb2312') as f:
+        content_text = f.read()
+
+    with open(filename, 'w', encoding='utf-8-sig') as f:
+        f.write(content_text)
+
+def convert_file_format(file):
+    if os.path.isfile(file):
+        convert_to_utf8(file)
+    elif os.path.isdir(file):
+        for filename in os.listdir(file):
+            f = os.path.join(file, filename)
+            convert_file_format(f)
+
 def main():
     current_path = os.path.split(os.path.realpath(__file__))[0]
+
+    # 格式转换
+    data_file_path = os.path.join(current_path, "data", "trade")
+    convert_file_format(data_file_path)
+
+    # 参数解析
     args = parse_args()
 
     if args.option == 'balance' or args.option == 'income':

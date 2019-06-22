@@ -21,7 +21,7 @@ class TradeAnalyzer(object):
 
     def read_from_file(self):
         self.df = pd.read_csv(self.datafile,
-                         encoding="gb2312",
+                         encoding="utf-8-sig",
                          dayfirst=True,
                          usecols = ["日期", "收盘价"])
         self.df = self.df[self.df["收盘价"] > 0]

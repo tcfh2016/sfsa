@@ -10,9 +10,9 @@ class ReportAnalyzer():
         if (len(args.stock) > 1):
             self.single_stock = False
         self.args = args
-        self.balance_df = None
-        self.income_df = None
 
+        self.balance_df = []
+        self.income_df = []
         self.balance_analyzer = []
         self.income_analyzer = []
 
@@ -25,7 +25,7 @@ class ReportAnalyzer():
 
         income_es['总资产报酬率'] = income_es['营业利润(万元)'] / income_es['资产总计(万元)']
         income_es['净资产报酬率'] = income_es['净利润(万元)'] / income_es['净资产(万元)']
-        income_es.T.to_csv("income_estimate.csv", sep=',', encoding='gb2312')
+        income_es.T.to_csv("income_estimate.csv", sep=',', encoding='utf-8-sig')
         print(income_es.T)
 
     def estimate_asset(self):
@@ -47,7 +47,7 @@ class ReportAnalyzer():
         df_asset_es['账面价值'] = (df_asset_es['资产总计(万元)'] - df_asset_es['负债合计(万元)']) / df_asset_es['实收资本(或股本)(万元)']
         # 资产负债率
         df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
-        df_asset_es.T.to_csv("assert_estimate.csv", sep=',', encoding='gb2312')
+        df_asset_es.T.to_csv("assert_estimate.csv", sep=',', encoding='utf-8-sig')
         print(df_asset_es.T)
 
     def prepare(self):
@@ -66,14 +66,14 @@ class ReportAnalyzer():
 
     def analize(self):
         if (self.single_stock):
-            self.balance_df = self.balance_analyzer.numberic_df
-            self.income_df = self.income_analyzer.numberic_df
+            self.balance_df = self.balance_analyzer[0].numberic_df
+            self.income_df = self.income_analyzer[0].numberic_df
 
             if (self.args.option == 'balance'):
-                self.balance_analyzer.analize()
+                self.balance_analyzer[0].analize()
                 self.estimate_asset()
             elif (self.args.option == 'income'):
-                self.income_analyzer.analize()
+                self.income_analyzer[0].analize()
                 self.estimate_profitability()
             else:
                 print("Invalid option !")
