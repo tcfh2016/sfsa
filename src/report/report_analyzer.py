@@ -81,22 +81,34 @@ class ReportAnalyzer():
         # 修正x轴标签过长，删除其中包含的'(万元)'字段
         df_for_plot = self.multi_stocks_df[filter_condition]
         index = pd.Series(df_for_plot.index)
-        index.replace(to_replace='\(万元\)', value=' ', regex=True, inplace=True)
+        index.replace(to_replace='\(万元\)', value='', regex=True, inplace=True)
         df_for_plot.index = index
-        #print(index)
-        #print(df_for_plot)
+
+        print(df_for_plot)
+        if title == '资产负债表':
+            df_for_plot_percentage = df_for_plot[:] / df_for_plot.loc['资产总计']
+        elif title == '利润表':
+            df_for_plot_percentage = df_for_plot[:] / df_for_plot.loc['营业总收入']
+        else:
+            pass
+
+        print(df_for_plot_percentage)
 
         plt.rcParams['font.sans-serif'] = ['SimHei']
-        dp = df_for_plot.plot(kind='bar', figsize=(8,6))
-        #df_for_plot.index = df_for_plot.index.strip()
-        plt.title(title)
-        dp.set_xlabel("项目")
+        fig, axes = plt.subplots(nrows=2, ncols=1)
+        dp = df_for_plot.plot(ax=axes[0], figsize=(8,6))
+#        dp.set_xlabel("项目")
         dp.set_ylabel("价值（万元）")
         dp.set_xticks(range(len(df_for_plot.index)))
-        dp.set_xticklabels(df_for_plot.index, rotation=90)
-        #plt.tight_layout()
-        plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
-        #plt.subplot_tool()
+        dp.set_xticklabels([], rotation=90)
+
+        dpp = df_for_plot_percentage.plot(ax=axes[1], figsize=(8,6))
+        dpp.set_xlabel("项目")
+        dpp.set_ylabel("百分比")
+        dpp.set_xticks(range(len(df_for_plot.index)))
+        dpp.set_xticklabels(df_for_plot.index, rotation=90)
+
+        plt.subplots_adjust(wspace=0.6, hspace=0, left=0.1, bottom=0.22, right=0.96, top=0.96)
         plt.show()
 
     def analize(self):
