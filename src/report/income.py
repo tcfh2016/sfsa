@@ -10,13 +10,11 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
 
         self.income_df = np.NaN
 
-    def choose_items(self):
-        df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
-        #df = df[df['2018-12-31'] > 0]，这种方式与下面这种方式等价
-        df = df[df[df.columns[0]] > 0]
-        self.income_df = df
+    def prepare(self):
+        # 滤除利润相关项目
+        self.income_df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
 
-    def plot(self, percent_filter):
+    def plot_profit(self, percent_filter):
         plt.rcParams['font.sans-serif'] = ['SimHei']
 
         # 选择资产部分超过一定百分比的项目，并作图
@@ -26,8 +24,8 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         print(df_forplot)
 
         income_plot = df_forplot.plot(figsize=(8,6))
-
-        # 设置纵坐标显示百分比，横坐标标签倾斜以便展示完全。
+        income_plot.set_xlabel("日期")
+        income_plot.set_ylabel("百分比")
         vals = income_plot.get_yticks()
         income_plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
         income_plot.set_xticks(range(len(df_forplot.index)))
@@ -36,5 +34,5 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         plt.show()
 
     def ratio_analyze(self):
-        self.choose_items()
-        self.plot(0.05)
+        self.prepare()
+        self.plot_profit(0.05)

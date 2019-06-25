@@ -65,21 +65,21 @@ class ReportAnalyzer():
                 print("Can't find {} and {}".format(self.balance_datafile, self.income_datafile))
                 os._exit(0)
 
-    def compare_asset(self):
-        self.multi_stocks_asset_df = pd.DataFrame(self.balance_df[0].index)
-        self.multi_stocks_asset_df = self.multi_stocks_asset_df.set_index(['报告日期'])
+    def compare_multi_stock_by_value(self, stocks_df, title):
+        self.multi_stocks_df = pd.DataFrame(stocks_df[0].index)
+        self.multi_stocks_df = self.multi_stocks_df.set_index(['报告日期'])
 
-        # 保存多只股票最近一年的资产负债表数据
-        filter_condition = [True] * len(self.balance_df[0]['2018-12-31'])
+        # 保存多只股票最近一年的资产负债表/利润表数据
+        filter_condition = [True] * len(stocks_df[0]['2018-12-31'])
         for i in range(len(self.args.stock)):
             s = self.args.stock[i]
-            self.multi_stocks_asset_df[s] = self.balance_df[i]['2018-12-31']
-            filter_condition &= self.multi_stocks_asset_df[s] > 10000
+            self.multi_stocks_df[s] = stocks_df[i]['2018-12-31']
+            filter_condition &= self.multi_stocks_df[s] > 10000
             #print(filter_condition)
         #print(self.multi_stocks_asset_df)
 
         # 修正x轴标签过长，删除其中包含的'(万元)'字段
-        df_for_plot = self.multi_stocks_asset_df[filter_condition]
+        df_for_plot = self.multi_stocks_df[filter_condition]
         index = pd.Series(df_for_plot.index)
         index.replace(to_replace='\(万元\)', value=' ', regex=True, inplace=True)
         df_for_plot.index = index
@@ -89,7 +89,7 @@ class ReportAnalyzer():
         plt.rcParams['font.sans-serif'] = ['SimHei']
         dp = df_for_plot.plot(kind='bar', figsize=(8,6))
         #df_for_plot.index = df_for_plot.index.strip()
-        plt.title('资产与负债')
+        plt.title(title)
         dp.set_xlabel("项目")
         dp.set_ylabel("价值（万元）")
         dp.set_xticks(range(len(df_for_plot.index)))
@@ -98,12 +98,6 @@ class ReportAnalyzer():
         plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
         #plt.subplot_tool()
         plt.show()
-
-    def compare_liability(self):
-        pass
-
-    def compare_profit(self):
-        pass
 
     def analize(self):
         for i in range(len(self.args.stock)):
@@ -121,10 +115,9 @@ class ReportAnalyzer():
                 print("Invalid option !")
         else:
             if (self.args.option == 'balance'):
-                self.compare_asset()
-                self.compare_liability()
+                self.compare_multi_stock_by_value(self.balance_df, '资产负债表')
             elif (self.args.option == 'income'):
-                self.compare_profit()
+                self.compare_multi_stock_by_value(self.income_df, '利润表')
             else:
                 print("Invalid option !")
 
