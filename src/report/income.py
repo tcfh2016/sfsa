@@ -13,7 +13,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
     def choose_items(self):
         df = self.numberic_df['营业总收入(万元)':'净利润(万元)']
         #df = df[df['2018-12-31'] > 0]，这种方式与下面这种方式等价
-        df = df[df[df.columns[0]] > 0]        
+        df = df[df[df.columns[0]] > 0]
         self.income_df = df
 
     def plot(self, percent_filter):
@@ -25,13 +25,14 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         df_forplot = df_forplot.T
         print(df_forplot)
 
-        income_plot = df_forplot.plot()
+        income_plot = df_forplot.plot(figsize=(8,6))
 
         # 设置纵坐标显示百分比，横坐标标签倾斜以便展示完全。
         vals = income_plot.get_yticks()
         income_plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
         income_plot.set_xticks(range(len(df_forplot.index)))
         income_plot.set_xticklabels(df_forplot.index, rotation=30)
+        plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
         plt.show()
 
     def ratio_analyze(self):

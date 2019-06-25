@@ -36,7 +36,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         asset_df_forplot = asset_df_percentage[asset_df_percentage[asset_df_percentage.columns[0]] > percent_filter]
         asset_df_forplot = asset_df_forplot.T
         print(asset_df_forplot)
-        ap = asset_df_forplot.plot()
+        ap = asset_df_forplot.plot(figsize=(8,6))
         ap_vals = ap.get_yticks()
         ap.set_yticklabels(['{:,.2%}'.format(x) for x in ap_vals])
         ap.set_xticks(range(len(asset_df_forplot.index)))
@@ -47,11 +47,12 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         debt_df_forplot = debt_df_percentage[debt_df_percentage[debt_df_percentage.columns[0]] > percent_filter]
         debt_df_forplot = debt_df_forplot.T
         print(debt_df_forplot)
-        dp = debt_df_forplot.plot()
+        dp = debt_df_forplot.plot(figsize=(8,6))
         dp_vals = dp.get_yticks()
         dp.set_yticklabels(['{:,.2%}'.format(x) for x in dp_vals])
         dp.set_xticks(range(len(asset_df_forplot.index)))
         dp.set_xticklabels(asset_df_forplot.index, rotation=30)
+        plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
         plt.show()
 
     def ratio_analyze(self):
