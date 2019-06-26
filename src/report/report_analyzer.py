@@ -5,13 +5,12 @@ import report.balance as balance
 import report.income as income
 
 class ReportAnalyzer():
-    def __init__(self, args, data_path):
+    def __init__(self, args, data_path, config_path):
         self.data_path = data_path
-        self.single_stock = True
-        if (len(args.stock) > 1):
-            self.single_stock = False
         self.args = args
+        self.config_path = config_path
 
+        self.stock_dict = {}
         self.balance_df = []
         self.income_df = []
         self.balance_analyzer = []
@@ -52,6 +51,19 @@ class ReportAnalyzer():
         print(df_asset_es.T)
 
     def prepare(self):
+        # 构建股票编码和名称字典
+        stock_list_file = os.path.join(self.config_path, "stock_list.txt")
+        if os.access(stock_list_file, os.R_OK):
+            with open(stock_list_file, "r", encoding='utf-8') as f:
+                for line in f:
+                    line = line.strip()
+                    l = line.split(',')
+                    self.stock_dict[l[0]] = l[1]
+                #print(self.stock_dict)
+        else:
+            print("Can't find stock list file.")
+
+        # 读取每只股票的财务报表信息
         for stock in self.args.stock:
             balance_filename = "zcfzb" + stock + ".csv"
             income_filename = "lrb" + stock + ".csv"
@@ -65,16 +77,17 @@ class ReportAnalyzer():
                 print("Can't find {} and {}".format(self.balance_datafile, self.income_datafile))
                 os._exit(0)
 
-    def compare_multi_stock_by_value(self, stocks_df, title):
+    def compare_multi_stocks(self, stocks_df, title):
         self.multi_stocks_df = pd.DataFrame(stocks_df[0].index)
         self.multi_stocks_df = self.multi_stocks_df.set_index(['报告日期'])
 
         # 保存多只股票最近一年的资产负债表/利润表数据
         filter_condition = [True] * len(stocks_df[0]['2018-12-31'])
         for i in range(len(self.args.stock)):
-            s = self.args.stock[i]
-            self.multi_stocks_df[s] = stocks_df[i]['2018-12-31']
-            filter_condition &= self.multi_stocks_df[s] > 10000
+            stock_no = self.args.stock[i]
+            stock_name = self.stock_dict[stock_no]
+            self.multi_stocks_df[stock_name] = stocks_df[i]['2018-12-31']
+            filter_condition &= self.multi_stocks_df[stock_name] > 10000
             #print(filter_condition)
         #print(self.multi_stocks_asset_df)
 
@@ -96,7 +109,7 @@ class ReportAnalyzer():
 
         plt.rcParams['font.sans-serif'] = ['SimHei']
         fig, axes = plt.subplots(nrows=2, ncols=1)
-        dp = df_for_plot.plot(ax=axes[0], figsize=(8,6))
+        dp = df_for_plot.plot(ax=axes[0], figsize=(8,6), kind='bar')
 #        dp.set_xlabel("项目")
         dp.set_ylabel("价值（万元）")
         dp.set_xticks(range(len(df_for_plot.index)))
@@ -116,7 +129,7 @@ class ReportAnalyzer():
             self.balance_df.append(self.balance_analyzer[i].numberic_df)
             self.income_df.append(self.income_analyzer[i].numberic_df)
 
-        if (self.single_stock):
+        if ((len(self.args.stock) == 1)):
             if (self.args.option == 'balance'):
                 self.balance_analyzer[0].analize()
                 self.estimate_asset()
@@ -127,9 +140,9 @@ class ReportAnalyzer():
                 print("Invalid option !")
         else:
             if (self.args.option == 'balance'):
-                self.compare_multi_stock_by_value(self.balance_df, '资产负债表')
+                self.compare_multi_stocks(self.balance_df, '资产负债表')
             elif (self.args.option == 'income'):
-                self.compare_multi_stock_by_value(self.income_df, '利润表')
+                self.compare_multi_stocks(self.income_df, '利润表')
             else:
                 print("Invalid option !")
 

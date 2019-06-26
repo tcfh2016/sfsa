@@ -34,20 +34,18 @@ def convert_file_format(file):
 
 def main():
     current_path = os.path.split(os.path.realpath(__file__))[0]
-
-    # 格式转换
-    data_file_path = os.path.join(current_path, "data", "report")
-    data_file_path = os.path.join(current_path, "data", "trade")
-    convert_file_format(data_file_path)
+    config_path = os.path.join(current_path, "data", "config")
 
     # 参数解析
     args = parse_args()
 
     if args.option == 'balance' or args.option == 'income':
         report_data_path = os.path.join(current_path, "data", "report")
-        report_analyzer.ReportAnalyzer(args, report_data_path).start()
+        convert_file_format(report_data_path)
+        report_analyzer.ReportAnalyzer(args, report_data_path, config_path).start()
     elif args.option == 'trade':
         trade_data_path = os.path.join(current_path, "data", "trade")
+        convert_file_format(trade_data_path)
         trade_analyzer.TradeAnalyzer(args, trade_data_path).start()
     else:
         print ("Invalid Option!")
