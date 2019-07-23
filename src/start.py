@@ -3,6 +3,7 @@ import chardet
 import argparse
 import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
+import finance.irr as irr
 
 def detect_encoding(file):
     with open(file, 'rb') as f:
@@ -47,11 +48,17 @@ def main():
         trade_data_path = os.path.join(current_path, "data", "trade")
         convert_file_format(trade_data_path)
         trade_analyzer.TradeAnalyzer(args, trade_data_path).start()
+    elif args.option == 'irr':
+        irr.Irr(300000.0, 5*12, 0.003, 900).run()
     else:
         print ("Invalid Option!")
 
 def parse_args():
     arg_parser = argparse.ArgumentParser()
+
+    arg_parser.add_argument("-o", "--option", required=True,
+                             choices=['balance', 'income', 'trade', 'irr'],
+                             help="options.")
 
     group = arg_parser.add_mutually_exclusive_group()
     group.add_argument("-f", "--file", #required=True,
@@ -59,9 +66,6 @@ def parse_args():
     group.add_argument("-s", "--stock", nargs='+',
                              help="support one or more stocks.")
 
-    arg_parser.add_argument("-o", "--option", required=True,
-                             choices=['balance', 'income', 'trade'],
-                             help="options.")
     arg_parser.add_argument("-p", "--plot",
                              help="plot option.")
     arg_parser.add_argument("-sd", "--startdate",
