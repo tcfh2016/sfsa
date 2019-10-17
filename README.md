@@ -51,7 +51,7 @@ python start.py -s 002352 -o trade --startdate 201501 --enddate 201808
   - 资产评估csv文件
 
 ```
-python start.py -s 002352 -o balance
+python start.py -o balance -s 002352
 ```
 
 - 利润表表分析
