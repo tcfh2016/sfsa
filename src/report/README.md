@@ -1,4 +1,13 @@
-# 设计
+# Report Analyzing Functionalities Design
 
-- 两个类`balance`和`income`分别负责资产负债表分析、利润表的分析。
-- `balance`和`income`实现共同的超类`Analyzer`。
+Different functionalities are applied to the analysis of different sheets: balance
+sheet, income statement and cash flow statement, there are some common operations
+among them, such as reading and processing data from csv files, so `inheritance`
+is used here.
+
+- Abstract class `analyzer` is base class to complete the data reading and cleaning
+from .csv files.
+- Derives classes `balance` and `income` take responsible for balance sheet analysis
+and income statement analysis separatly.
+- Class `balance` and `income` are composed into `ReportAnalyzer` which can do
+complex calculation and comparison with data in other classes. 

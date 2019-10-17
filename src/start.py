@@ -5,6 +5,7 @@ import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
 import finance.irr as irr
 
+
 def detect_encoding(file):
     with open(file, 'rb') as f:
         content_bytes = f.read()
@@ -13,6 +14,7 @@ def detect_encoding(file):
     encoding_format = detected['encoding']
     print(f"{file}: detected as {encoding_format}.")
     return encoding_format
+
 
 def convert_to_utf8(filename):
     encoding_format = detect_encoding(filename)
@@ -25,6 +27,7 @@ def convert_to_utf8(filename):
     with open(filename, 'w', encoding='utf-8-sig') as f:
         f.write(content_text)
 
+
 def convert_file_format(file):
     if os.path.isfile(file):
         convert_to_utf8(file)
@@ -32,6 +35,7 @@ def convert_file_format(file):
         for filename in os.listdir(file):
             f = os.path.join(file, filename)
             convert_file_format(f)
+
 
 def main():
     current_path = os.path.split(os.path.realpath(__file__))[0]
@@ -52,6 +56,7 @@ def main():
         irr.Irr(300000.0, 5*12, 0.003, 900).run()
     else:
         print ("Invalid Option!")
+
 
 def parse_args():
     arg_parser = argparse.ArgumentParser()
@@ -74,6 +79,7 @@ def parse_args():
                              help="specify the end date.")
 
     return arg_parser.parse_args()
+
 
 if __name__ == '__main__':
     main()

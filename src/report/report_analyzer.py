@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import report.balance as balance
 import report.income as income
 
+
 class ReportAnalyzer():
     def __init__(self, args, data_path, config_path):
         self.data_path = data_path
@@ -17,19 +18,19 @@ class ReportAnalyzer():
         self.income_analyzer = []
 
     def estimate_profitability(self):
-        income_es = pd.DataFrame(self.income_df[0].loc['营业利润(万元)'])
-        income_es['资产总计(万元)'] = self.balance_df[0].loc['资产总计(万元)']
-        income_es['净利润(万元)'] = self.income_df[0].loc['净利润(万元)']
-        income_es['负债合计(万元)'] = self.balance_df[0].loc['负债合计(万元)']
-        income_es['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
+        df = pd.DataFrame(self.income_df[0].loc['营业利润(万元)'])
+        df['资产总计(万元)'] = self.balance_df[0].loc['资产总计(万元)']
+        df['净利润(万元)'] = self.income_df[0].loc['净利润(万元)']
+        df['负债合计(万元)'] = self.balance_df[0].loc['负债合计(万元)']
+        df['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
 
-        income_es['总资产报酬率'] = income_es['营业利润(万元)'] / income_es['资产总计(万元)']
-        income_es['净资产报酬率'] = income_es['净利润(万元)'] / income_es['净资产(万元)']
-        income_es.T.to_csv("income_estimate.csv", sep=',', encoding='utf-8-sig')
-        print(income_es.T)
+        df['总资产报酬率'] = df['营业利润(万元)'] / df['资产总计(万元)']
+        df['净资产报酬率'] = df['净利润(万元)'] / df['净资产(万元)']
+        df.T.to_csv("income_estimate.csv", sep=',', encoding='utf-8-sig')
+        print(df.T)
 
     def estimate_asset(self):
-        #print(self.asset_df.loc['流动资产合计(万元)'])
+        # print(self.asset_df.loc['流动资产合计(万元)'])
         df_asset_es = pd.DataFrame(self.balance_df[0].loc['资产总计(万元)'])
         df_asset_es['存货(万元)'] = self.balance_df[0].loc['存货(万元)']
         df_asset_es['流动资产合计(万元)'] = self.balance_df[0].loc['流动资产合计(万元)']
@@ -47,10 +48,10 @@ class ReportAnalyzer():
         df_asset_es['账面价值'] = (df_asset_es['资产总计(万元)'] - df_asset_es['负债合计(万元)']) / df_asset_es['实收资本(或股本)(万元)']
         # 资产负债率
         df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
-        df_asset_es.T.to_csv("assert_estimate.csv", sep=',', encoding='utf-8-sig')
+        df_asset_es.T.to_csv("asset_estimate.csv", sep=',', encoding='utf-8-sig')
         print(df_asset_es.T)
 
-    def prepare(self):
+    def prepare_dataset(self):
         # 构建股票编码和名称字典
         stock_list_file = os.path.join(self.config_path, "stock_list.txt")
         if os.access(stock_list_file, os.R_OK):
@@ -124,28 +125,33 @@ class ReportAnalyzer():
         plt.subplots_adjust(wspace=0.6, hspace=0, left=0.1, bottom=0.22, right=0.96, top=0.96)
         plt.show()
 
-    def analize(self):
+    def analyze_single_stock(self):
+        if (self.args.option == 'balance'):
+            self.balance_analyzer[0].analyze()
+            self.estimate_asset()
+        elif (self.args.option == 'income'):
+            self.income_analyzer[0].analyze()
+            self.estimate_profitability()
+        else:
+            print("Invalid option !")
+
+    def analyze_multipy_stocks(self):
+        if (self.args.option == 'balance'):
+            self.compare_multi_stocks(self.balance_df, '资产负债表')
+        elif (self.args.option == 'income'):
+            self.compare_multi_stocks(self.income_df, '利润表')
+        else:
+            print("Invalid option !")
+
+    def analyze(self):
         for i in range(len(self.args.stock)):
             self.balance_df.append(self.balance_analyzer[i].numberic_df)
             self.income_df.append(self.income_analyzer[i].numberic_df)
-
         if ((len(self.args.stock) == 1)):
-            if (self.args.option == 'balance'):
-                self.balance_analyzer[0].analize()
-                self.estimate_asset()
-            elif (self.args.option == 'income'):
-                self.income_analyzer[0].analize()
-                self.estimate_profitability()
-            else:
-                print("Invalid option !")
+            self.analyze_single_stock()
         else:
-            if (self.args.option == 'balance'):
-                self.compare_multi_stocks(self.balance_df, '资产负债表')
-            elif (self.args.option == 'income'):
-                self.compare_multi_stocks(self.income_df, '利润表')
-            else:
-                print("Invalid option !")
+            self.analyze_multipy_stocks()
 
     def start(self):
-        self.prepare()
-        self.analize()
+        self.prepare_dataset()
+        self.analyze()

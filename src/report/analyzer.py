@@ -1,6 +1,6 @@
-import os
 import pandas as pd
 import numpy as np
+
 
 class Analyzer(object):
     def __init__(self, file_name):
@@ -25,24 +25,16 @@ class Analyzer(object):
         return df
 
     # 报表预处理，进行一些正式数据分析前的处理工作。
-    def pre(self):
+    def read_data(self):
         # 读取原始数据，并获取索引信息，用于之后的数据计算
-        df = pd.read_csv(self.filename, encoding='utf-8-sig', index_col = 0, header = 0,
+        df = pd.read_csv(self.filename,
+                         encoding='utf-8-sig',
+                         index_col=0,
+                         header=0,
                          dtype=np.object)
-        #print(df)
+        # print(df)
         self.numberic_df = self.convert_to_numeric(df)
-        #print(self.numberic_df)
+        # print(self.numberic_df)
 
-    # 报表比率分析
-    def ratio_analyze(self):
+    def analyze(self):
         pass
-
-    # 报表后处理，进行一些正式数据分析后的处理工作。
-    def post(self):
-        pass
-
-    # 通用的分析框架
-    def analize(self):
-        self.ratio_analyze()
-        #self.proc()
-        #self.post()

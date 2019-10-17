@@ -1,0 +1,23 @@
+@startuml
+
+Analyzer <-- BalanceSheetAnalyzer
+Analyzer <-- IncomeStatementAnalyzer
+ReportAnalyzer *-  Analyzer
+
+class Analyzer {
+  filename
+  numberic_df
+  + analyze()
+  + read_data()
+  - convert_to_numeric()
+}
+
+class BalanceSheetAnalyzer {
+  + analyze()
+}
+
+class IncomeStatementAnalyzer {
+  + analyze()
+}
+
+@enduml

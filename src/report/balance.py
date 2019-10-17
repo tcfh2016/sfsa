@@ -6,7 +6,7 @@ import report.analyzer as analyzer
 class BalanceSheetAnalyzer(analyzer.Analyzer):
     def __init__(self, file_name):
         analyzer.Analyzer.__init__(self, file_name)
-        self.pre()
+        self.read_data()
 
         self.asset_df = np.NaN
         self.debt_df = np.NaN
@@ -18,7 +18,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         # 滤除资产部分的数据
         self.asset_df = df['货币资金(万元)':'资产总计(万元)']
         #print(self.asset_df)
-        
+
         # 滤除负债部分的数据
         self.debt_df = df['短期借款(万元)':'负债合计(万元)']
         #print(self.debt_df)
@@ -65,7 +65,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
         plt.show()
 
-    def ratio_analyze(self):
+    def analyze(self):
         self.prepare()
         self.plot_asset(0.1)
         self.plot_liability(0.1)
