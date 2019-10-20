@@ -30,7 +30,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                                                '净利润(万元)']]
         print(self.income_df)
 
-    def plot(self, percent_filter):
+    def plot(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
         df = self.income_df.T
         df['营业费用(万元)'] = df['销售费用(万元)'] + \
@@ -68,25 +68,20 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                             '营业利润(万元)',
                             ]]
         percent_items = percent_items[:].div(percent_items['营业收入(万元)'], axis=0)
+        percent_items = percent_items.ix[:, 1:]
         print(percent_items)
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
-        value_items.plot(ax=axes[0])
-        percent_items.plot(ax=axes[1])
-        plt.show()
+        value_plot = value_items.plot(ax=axes[0], figsize=(8, 6))
+        value_plot.set_ylabel("数值")
+        value_plot.legend(value_items.columns)
 
-        '''
-        income_plot = df_forplot.plot(figsize=(8,6))
-        income_plot.set_xlabel("日期")
-        income_plot.set_ylabel("百分比")
-        vals = income_plot.get_yticks()
-        income_plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
-        income_plot.set_xticks(range(len(df_forplot.index)))
-        income_plot.set_xticklabels(df_forplot.index, rotation=30)
-        plt.subplots_adjust(wspace=0.6, hspace=0.6, left=0.1, bottom=0.22, right=0.96, top=0.96)
+        percent_plot = percent_items.plot(ax=axes[1], figsize=(8, 6))
+        percent_plot.set_xlabel("日期")
+        percent_plot.set_ylabel("百分比")
+        percent_plot.legend(percent_items.columns)
         plt.show()
-        '''
 
     def analyze(self):
         self.prepare()
-        self.plot(0.05)
+        self.plot()
