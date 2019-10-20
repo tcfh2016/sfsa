@@ -58,14 +58,19 @@ python start.py -o balance -s 002352
 
 ### Income Statement
 
-当前仅支持同型分析（比率分析），输出结果：
+The common-size analysis has been dropped, and two aspects trends are given:
 
-  - 利润表同型分析（图示）  
-  - 资产评估csv文件
+- trends for operation revenue and several kinds of profits
+- trends for ratio of major profits and operation expense
+
+Execute following command in working directory to produce trend chart:
 
 ```
 python start.py -s 002352 -o income
 ```
+
+![](./src/report/doc/income_analysis.png)
+
 
 ### Cash flow Statement
 
