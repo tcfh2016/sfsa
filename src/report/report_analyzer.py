@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import report.balance as balance
 import report.income as income
+import report.cashflow as cashflow
 
 
 class ReportAnalyzer():
@@ -16,6 +17,7 @@ class ReportAnalyzer():
         self.income_df = []
         self.balance_analyzer = []
         self.income_analyzer = []
+        self.cashflow_analyzer = []
 
     def estimate_profitability(self):
         df = pd.DataFrame(self.income_df[0].loc['营业利润(万元)'])
@@ -27,7 +29,7 @@ class ReportAnalyzer():
         df['总资产报酬率'] = df['营业利润(万元)'] / df['资产总计(万元)']
         df['净资产报酬率'] = df['净利润(万元)'] / df['净资产(万元)']
         df.T.to_csv("income_estimate.csv", sep=',', encoding='utf-8-sig')
-        print(df.T)
+        # print(df.T)
 
     def estimate_asset(self):
         # print(self.asset_df.loc['流动资产合计(万元)'])
@@ -49,7 +51,7 @@ class ReportAnalyzer():
         # 资产负债率
         df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
         df_asset_es.T.to_csv("asset_estimate.csv", sep=',', encoding='utf-8-sig')
-        print(df_asset_es.T)
+        # print(df_asset_es.T)
 
     def prepare_dataset(self):
         # 构建股票编码和名称字典
@@ -60,7 +62,7 @@ class ReportAnalyzer():
                     line = line.strip()
                     l = line.split(',')
                     self.stock_dict[l[0]] = l[1]
-                #print(self.stock_dict)
+                # print(self.stock_dict)
         else:
             print("Can't find stock list file.")
 
@@ -68,12 +70,16 @@ class ReportAnalyzer():
         for stock in self.args.stock:
             balance_filename = "zcfzb" + stock + ".csv"
             income_filename = "lrb" + stock + ".csv"
+            cashflow_filename = "xjllb" + stock + ".csv"
             balance_datafile = os.path.join(self.data_path, balance_filename)
             income_datafile = os.path.join(self.data_path, income_filename)
-
-            if os.access(balance_datafile, os.R_OK) and os.access(income_datafile, os.R_OK):
+            cashflow_datafile = os.path.join(self.data_path, cashflow_filename)
+            if os.access(balance_datafile, os.R_OK) and \
+               os.access(income_datafile, os.R_OK) and \
+               os.access(cashflow_datafile, os.R_OK):
                 self.balance_analyzer.append(balance.BalanceSheetAnalyzer(balance_datafile))
                 self.income_analyzer.append(income.IncomeStatementAnalyzer(income_datafile))
+                self.cashflow_analyzer.append(cashflow.CashflowStatementAnalyzer(cashflow_datafile))
             else:
                 print("Can't find {} and {}".format(self.balance_datafile, self.income_datafile))
                 os._exit(0)
@@ -89,8 +95,8 @@ class ReportAnalyzer():
             stock_name = self.stock_dict[stock_no]
             self.multi_stocks_df[stock_name] = stocks_df[i]['2018-12-31']
             filter_condition &= self.multi_stocks_df[stock_name] > 10000
-            #print(filter_condition)
-        #print(self.multi_stocks_asset_df)
+            # print(filter_condition)
+        # print(self.multi_stocks_asset_df)
 
         # 修正x轴标签过长，删除其中包含的'(万元)'字段
         df_for_plot = self.multi_stocks_df[filter_condition]
@@ -98,7 +104,7 @@ class ReportAnalyzer():
         index.replace(to_replace='\(万元\)', value='', regex=True, inplace=True)
         df_for_plot.index = index
 
-        print(df_for_plot)
+        # print(df_for_plot)
         if title == '资产负债表':
             df_for_plot_percentage = df_for_plot[:] / df_for_plot.loc['资产总计']
         elif title == '利润表':
@@ -106,7 +112,7 @@ class ReportAnalyzer():
         else:
             pass
 
-        print(df_for_plot_percentage)
+        # print(df_for_plot_percentage)
 
         plt.rcParams['font.sans-serif'] = ['SimHei']
         fig, axes = plt.subplots(nrows=2, ncols=1)
@@ -132,6 +138,8 @@ class ReportAnalyzer():
         elif (self.args.option == 'income'):
             self.income_analyzer[0].analyze()
             self.estimate_profitability()
+        elif (self.args.option == 'cashflow'):
+            self.cashflow_analyzer[0].analyze()
         else:
             print("Invalid option !")
 

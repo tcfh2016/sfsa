@@ -20,6 +20,7 @@ class Analyzer(object):
     def convert_to_numeric(self, raw_df):
         df = raw_df.dropna(axis=1, thresh=3)
         df = df.applymap(self.replace_to_zero)
+        # print(df)
         for col in df:
             df[col] = pd.to_numeric(df[col])
         return df

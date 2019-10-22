@@ -28,7 +28,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                                                '财务费用(万元)',
                                                '营业利润(万元)',
                                                '净利润(万元)']]
-        print(self.income_df)
+        # print(self.income_df)
 
     def plot(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -54,7 +54,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                           '核心利润(万元)',
                           '营业利润(万元)',
                           '净利润(万元)']]
-        print(value_items)
+        # print(value_items)
 
         # 2. 百分比
         #   - 毛利率
@@ -69,7 +69,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                             ]]
         percent_items = percent_items[:].div(percent_items['营业收入(万元)'], axis=0)
         percent_items = percent_items.ix[:, 1:]
-        print(percent_items)
+        # print(percent_items)
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
         value_plot = value_items.plot(ax=axes[0], figsize=(8, 6))
