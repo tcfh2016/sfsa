@@ -15,21 +15,39 @@ class ReportAnalyzer():
         self.stock_dict = {}
         self.balance_df = []
         self.income_df = []
+        self.cashflow_df = []
         self.balance_analyzer = []
         self.income_analyzer = []
         self.cashflow_analyzer = []
 
-    def estimate_profitability(self):
-        df = pd.DataFrame(self.income_df[0].loc['营业利润(万元)'])
-        df['资产总计(万元)'] = self.balance_df[0].loc['资产总计(万元)']
-        df['净利润(万元)'] = self.income_df[0].loc['净利润(万元)']
-        df['负债合计(万元)'] = self.balance_df[0].loc['负债合计(万元)']
-        df['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
+    def joint_analyze_profit(self):
+        plt.rcParams['axes.unicode_minus'] = False
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+        fig, axes = plt.subplots(nrows=2, ncols=1)
 
-        df['总资产报酬率'] = df['营业利润(万元)'] / df['资产总计(万元)']
+        # joint analysis for income items and balance items
+        ib_df = pd.DataFrame(self.income_df[0].loc['利润总额(万元)'])
+        ib_df['负债合计(万元)'] = self.balance_df[0].loc['负债合计(万元)']
+        ib_df['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
+        ib_df_plot = ib_df.plot(ax=axes[0], figsize=(8, 6))
+        ib_df_plot.set_ylabel("数值")
+
+        # analysis rate of return
+        df = pd.DataFrame(self.income_df[0].loc['利润总额(万元)'])
+        df['净利润(万元)'] = self.income_df[0].loc['净利润(万元)']
+        df['资产总计(万元)'] = self.balance_df[0].loc['资产总计(万元)']
+        df['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
+        df['总资产报酬率'] = df['利润总额(万元)'] / df['资产总计(万元)']
         df['净资产报酬率'] = df['净利润(万元)'] / df['净资产(万元)']
-        df.T.to_csv("income_estimate.csv", sep=',', encoding='utf-8-sig')
-        # print(df.T)
+
+        rr_df = pd.DataFrame(df, columns=['总资产报酬率', '净资产报酬率'])
+        rr_df_plot = rr_df.plot(ax=axes[1], figsize=(8, 6))
+        rr_df_plot.set_ylabel('百分比')
+        rr_df_plot.set_xlabel('日期')
+        vals = rr_df_plot.get_yticks()
+        rr_df_plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
+
+        plt.show()
 
     def estimate_asset(self):
         # print(self.asset_df.loc['流动资产合计(万元)'])
@@ -52,6 +70,26 @@ class ReportAnalyzer():
         df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
         df_asset_es.T.to_csv("asset_estimate.csv", sep=',', encoding='utf-8-sig')
         # print(df_asset_es.T)
+
+    def joint_analyze_cashflow(self):
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+        fig, axes = plt.subplots(nrows=2, ncols=1)
+
+        # joint analysis for income items and cashflow items
+        ic_df = pd.DataFrame(self.cashflow_df[0].loc['销售商品、提供劳务收到的现金(万元)'])
+        ic_df['营业收入(万元)'] = self.income_df[0].loc['营业收入(万元)']
+        ic_df_plot = ic_df.plot(ax=axes[0], figsize=(8, 6))
+        ic_df_plot.set_ylabel("数值")
+        # print(ic_df)
+
+        # joint analysis for balance items and cashflow items
+        bc_df = pd.DataFrame(self.cashflow_df[0].loc['期末现金及现金等价物余额(万元)'])
+        bc_df['短期借款(万元)'] = self.balance_df[0].loc['短期借款(万元)']
+        bc_df['长期借款(万元)'] = self.balance_df[0].loc['长期借款(万元)']
+        liability_dp = bc_df.plot(ax=axes[1], figsize=(8, 6))
+        liability_dp.set_xlabel("日期")
+        liability_dp.set_ylabel("数值")
+        plt.show()
 
     def prepare_dataset(self):
         # 构建股票编码和名称字典
@@ -137,9 +175,10 @@ class ReportAnalyzer():
             self.estimate_asset()
         elif (self.args.option == 'income'):
             self.income_analyzer[0].analyze()
-            self.estimate_profitability()
+            self.joint_analyze_profit()
         elif (self.args.option == 'cashflow'):
             self.cashflow_analyzer[0].analyze()
+            self.joint_analyze_cashflow()
         else:
             print("Invalid option !")
 
@@ -155,6 +194,7 @@ class ReportAnalyzer():
         for i in range(len(self.args.stock)):
             self.balance_df.append(self.balance_analyzer[i].numberic_df)
             self.income_df.append(self.income_analyzer[i].numberic_df)
+            self.cashflow_df.append(self.cashflow_analyzer[i].numberic_df)
         if ((len(self.args.stock) == 1)):
             self.analyze_single_stock()
         else:

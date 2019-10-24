@@ -74,16 +74,24 @@ python start.py -s 002352 -o income
 
 ### Cash flow Statement
 
-经营活动产生的现金流量净额
-投资活动产生的现金流量净额
-筹资活动产生的现金流量净额
-净利润
+1. Show net cash flow from "operating activities", "investing activities" and "
+financing activities", and compare "net cash flow from operating activities" with
+ "net profit"
 
-销售商品、提供劳务收到的现金
-营业收入
+![](./src/report/doc/cash_flow_analysis.png)
 
-年末现金及现金等价物余额
-有息负债
+2. Compare cash flow items with balance statement items
+
+- "cash received from the sale of goods and services" and "operating income"
+- "year-end cash and cash equivalent balance" and "interest-bearing liabilities"
+
+![](./src/report/doc/cash_flow_analysis_balance_items.png)
+
+Execute following command in working directory to produce trend chart:
+
+```
+python start.py -s 002352 -o income
+```
 
 ## 2.2 Multiply Stock
 

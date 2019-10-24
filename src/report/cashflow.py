@@ -39,7 +39,7 @@ class CashflowStatementAnalyzer(analyzer.Analyzer):
         netincome_plot.set_ylabel("数值")
         netincome_plot.set_xlabel("日期")
 
-        plt.show()
+        # plt.show()
 
     def analyze(self):
         self.prepare()

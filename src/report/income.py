@@ -79,8 +79,9 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
         percent_plot = percent_items.plot(ax=axes[1], figsize=(8, 6))
         percent_plot.set_xlabel("日期")
         percent_plot.set_ylabel("百分比")
+        vals = percent_plot.get_yticks()
+        percent_plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
         percent_plot.legend(percent_items.columns)
-        plt.show()
 
     def analyze(self):
         self.prepare()
