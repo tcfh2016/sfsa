@@ -172,7 +172,7 @@ class ReportAnalyzer():
     def analyze_single_stock(self):
         if (self.args.option == 'balance'):
             self.balance_analyzer[0].analyze()
-            self.estimate_asset()
+            #self.estimate_asset()
         elif (self.args.option == 'income'):
             self.income_analyzer[0].analyze()
             self.joint_analyze_profit()
