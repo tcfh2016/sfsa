@@ -1,6 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import report.analyzer as analyzer
+import pandas as pd
 
 
 class BalanceSheetAnalyzer(analyzer.Analyzer):
@@ -64,6 +65,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         # print(self.equity_df)
 
     def plot_asset(self):
+        plt.rcParams['axes.unicode_minus'] = False
         plt.rcParams['font.sans-serif'] = ['SimHei']
 
         # 选择资产部分超过一定百分比的项目，并作图
@@ -77,7 +79,7 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         debt_rate = debt_rate.T
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
-        ap = asset_rate.plot(ax=axes[0], figsize=(8,6))        
+        ap = asset_rate.plot(ax=axes[0], figsize=(8,6))
         ap.set_ylabel("百分比")
         ap_vals = ap.get_yticks()
         ap.set_yticklabels(['{:,.2%}'.format(x) for x in ap_vals])
@@ -88,24 +90,33 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         dp_vals = dp.get_yticks()
         dp.set_yticklabels(['{:,.2%}'.format(x) for x in dp_vals])
 
-        fig_whole, axes_whole = plt.subplots(nrows=2, ncols=1)
-        overall_df = self.overall_df
-        overall_rate_df = self.overall_df[:] / self.overall_df.loc['资产总计(万元)']
-
-        op = overall_df.T.plot(ax=axes_whole[0], figsize=(8,6))
-        op.set_ylabel("数值")
-
-        opr = overall_rate_df.T.plot(ax=axes_whole[1], figsize=(8,6))
-        opr.set_xlabel("日期")
-        opr.set_ylabel("数值")
-        plt.show()
-
-    def plot_liability(self):
+    def estimate_asset(self):
+        plt.rcParams['axes.unicode_minus'] = False
         plt.rcParams['font.sans-serif'] = ['SimHei']
 
+        # 1.流动资产检查
+        current_asset = self.numberic_df.loc[['货币资金(万元)',
+                                              '存货(万元)',
+                                              '流动资产合计(万元)',
+                                              '流动负债合计(万元)']]
+        # 2.流动资产价值与账面价值
+        current_asset_value = pd.DataFrame(self.numberic_df.loc['实收资本(或股本)(万元)'])
+        current_asset_value['每股流动资产价值'] = (self.numberic_df.loc['流动资产合计(万元)'] - self.numberic_df.loc['流动负债合计(万元)']) / self.numberic_df.loc['实收资本(或股本)(万元)']
+        book_value = self.numberic_df.loc['归属于母公司股东权益合计(万元)'] - self.numberic_df.loc['无形资产(万元)'] - self.numberic_df.loc['商誉(万元)']
+        current_asset_value['每股账面价值'] = book_value / self.numberic_df.loc['实收资本(或股本)(万元)']
+        del current_asset_value['实收资本(或股本)(万元)']
+
+        fig, axes = plt.subplots(nrows=2, ncols=1)
+        cap = current_asset.T.plot(ax=axes[0], figsize=(8,6))
+        cap.set_ylabel("数值")
+
+        cavp = current_asset_value.plot(ax=axes[1], figsize=(8,6))
+        cavp.set_xlabel("日期")
+        cavp.set_ylabel("数值")
+        plt.show()
 
 
     def analyze(self):
         self.prepare()
         self.plot_asset()
-        self.plot_liability()
+        self.estimate_asset()
