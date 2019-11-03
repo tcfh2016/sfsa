@@ -46,15 +46,18 @@ python start.py -s 002352 -o trade --startdate 201501 --enddate 201808
 
 ### Balance Sheet
 
-当前仅支持同型分析（比率分析），输出结果：
+There are two diagrams for balance sheet analysis:
 
-  - 资产部分同型分析（图示）
-  - 负债部分同型分析（图示）
-  - 资产评估csv文件
+- common size analysis for assets and liabilities
+- the current asset presentation
 
 ```
-python start.py -o balance -s 002352
+python start.py -o balance -s 000898
 ```
+
+![](./src/report/doc/balance_asset_liability.png)
+
+![](./src/report/doc/current_asset.png)
 
 ### Income Statement
 
