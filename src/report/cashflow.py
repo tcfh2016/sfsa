@@ -27,9 +27,10 @@ class CashflowStatementAnalyzer(analyzer.Analyzer):
                         '投资活动产生的现金流量净额(万元)',
                         '筹资活动产生的现金流量净额(万元)',
                         '现金及现金等价物净增加额(万元)']]
-
+        print(net_items)
         net_income_items = df[['经营活动产生的现金流量净额(万元)',
                                '净利润(万元)']]
+        print(net_income_items)
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
         net_plot = net_items.plot(ax=axes[0], figsize=(8, 6))

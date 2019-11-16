@@ -29,6 +29,7 @@ class ReportAnalyzer():
         ib_df = pd.DataFrame(self.income_df[0].loc['利润总额(万元)'])
         ib_df['负债合计(万元)'] = self.balance_df[0].loc['负债合计(万元)']
         ib_df['净资产(万元)'] = self.balance_df[0].loc['所有者权益(或股东权益)合计(万元)']
+        print(ib_df)
         ib_df_plot = ib_df.plot(ax=axes[0], figsize=(8, 6))
         ib_df_plot.set_ylabel("数值")
 
@@ -41,6 +42,7 @@ class ReportAnalyzer():
         df['净资产报酬率'] = df['净利润(万元)'] / df['净资产(万元)']
 
         rr_df = pd.DataFrame(df, columns=['总资产报酬率', '净资产报酬率'])
+        print(rr_df)
         rr_df_plot = rr_df.plot(ax=axes[1], figsize=(8, 6))
         rr_df_plot.set_ylabel('百分比')
         rr_df_plot.set_xlabel('日期')
@@ -69,7 +71,7 @@ class ReportAnalyzer():
         # 资产负债率
         df_asset_es['资产负债率'] = (df_asset_es['负债合计(万元)'] / df_asset_es['资产总计(万元)'])
         df_asset_es.T.to_csv("asset_estimate.csv", sep=',', encoding='utf-8-sig')
-        # print(df_asset_es.T)
+        #print(df_asset_es.T)
 
     def joint_analyze_cashflow(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
@@ -80,12 +82,13 @@ class ReportAnalyzer():
         ic_df['营业收入(万元)'] = self.income_df[0].loc['营业收入(万元)']
         ic_df_plot = ic_df.plot(ax=axes[0], figsize=(8, 6))
         ic_df_plot.set_ylabel("数值")
-        # print(ic_df)
+        print(ic_df)
 
         # joint analysis for balance items and cashflow items
         bc_df = pd.DataFrame(self.cashflow_df[0].loc['期末现金及现金等价物余额(万元)'])
         bc_df['短期借款(万元)'] = self.balance_df[0].loc['短期借款(万元)']
         bc_df['长期借款(万元)'] = self.balance_df[0].loc['长期借款(万元)']
+        print(bc_df)
         liability_dp = bc_df.plot(ax=axes[1], figsize=(8, 6))
         liability_dp.set_xlabel("日期")
         liability_dp.set_ylabel("数值")

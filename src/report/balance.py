@@ -72,11 +72,13 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         asset_rate = self.asset_df[:] / self.numberic_df.loc['资产总计(万元)']
         asset_rate = asset_rate[asset_rate[asset_rate.columns[0]] > 0.05]
         asset_rate = asset_rate.T
+        print(asset_rate)
 
         # 选择负债部分超过一定百分比的项目，并作图
         debt_rate = self.debt_df[:] / self.numberic_df.loc['资产总计(万元)']
         debt_rate = debt_rate[debt_rate[debt_rate.columns[0]] > 0.05]
         debt_rate = debt_rate.T
+        print(debt_rate)
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
         ap = asset_rate.plot(ax=axes[0], figsize=(8,6))
@@ -107,9 +109,10 @@ class BalanceSheetAnalyzer(analyzer.Analyzer):
         del current_asset_value['实收资本(或股本)(万元)']
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
+        print(current_asset.T)
         cap = current_asset.T.plot(ax=axes[0], figsize=(8,6))
         cap.set_ylabel("数值")
-
+        print(current_asset_value)
         cavp = current_asset_value.plot(ax=axes[1], figsize=(8,6))
         cavp.set_xlabel("日期")
         cavp.set_ylabel("数值")
