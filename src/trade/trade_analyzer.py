@@ -34,15 +34,14 @@ class TradeAnalyzer(object):
         df["月"] = df["日期"].dt.month
 
         month_groups = df.groupby(["年", "月"])
-        month_groups.min().reset_index().to_csv(self.min_value_in_month_file, sep=',', encoding='gb2312')
-        month_groups.max().reset_index().to_csv(self.max_value_in_month_file, sep=',', encoding='gb2312')
+        month_groups.min().reset_index().to_csv(self.min_value_in_month_file, sep=',', encoding='utf-8-sig')
+        month_groups.max().reset_index().to_csv(self.max_value_in_month_file, sep=',', encoding='utf-8-sig')
 
         min_max_df = month_groups.min()
         min_max_df.rename(columns={'收盘价':'最低价'}, inplace=True)
         min_max_df['最高价'] = month_groups.max()['收盘价']
         min_max_df['日期'] = min_max_df['日期'].dt.to_period('M')
-        min_max_df.to_csv(self.min_max_in_month_file, sep=',', encoding='gb2312')
-        #min_max_df.index = min_max_df['日期']
+        min_max_df.to_csv(self.min_max_in_month_file, sep=',', encoding="utf-8-sig")
         min_max_df = min_max_df.set_index('日期', drop=True)
         self.min_max_df = min_max_df
 
@@ -51,15 +50,11 @@ class TradeAnalyzer(object):
 
     def plot(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
-
         plot_df = self.min_max_df
         if self.start_date != None and self.end_date != None:
             plot_df = self.min_max_df[self.start_date:self.end_date]
 
         p = plot_df.plot()
-        #p.set_xticks(range(len(plot_df.index)))
-        #p.set_xticklabels(plot_df.index, rotation=30)
-
         plt.show()
 
     def start(self):
