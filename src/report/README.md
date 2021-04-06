@@ -10,4 +10,6 @@ from .csv files.
 - Derives classes `balance` and `income` take responsible for balance sheet analysis
 and income statement analysis separatly.
 - Class `balance` and `income` are composed into `ReportAnalyzer` which can do
-complex calculation and comparison with data in other classes. 
+complex calculation and comparison with data in other classes.
+
+income 营业总收入显示有问题。

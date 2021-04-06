@@ -26,15 +26,15 @@ Some reminders:
 
 # 1 Trade Analysis
 
-目前仅支持单只股票的交易记录分析，如果在命令中传入了多只股票编码，默认处理第一只股票。
+Only support the trade analysis for one stock.
 
-- 得出基于月份的最低、最高价
+- Get the minimum and maximum price by month
 
 ```
 python start.py -s 002352 --option trade
 ```
 
-- 指定交易时间段
+- Specify time range
 
 ```
 python start.py -s 002352 -o trade --startdate 201501 --enddate 201808

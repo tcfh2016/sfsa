@@ -66,6 +66,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                             '营业费用(万元)',
                             '核心利润(万元)',
                             '营业利润(万元)',
+                            '净利润(万元)'
                             ]]
         percent_items = percent_items[:].div(percent_items['营业收入(万元)'], axis=0)
         percent_items = percent_items.ix[:, 1:]

@@ -29,6 +29,7 @@ def convert_to_utf8(filename):
     # convert to utf-8
     if encoding_format == 'utf-8-sig' or encoding_format == 'UTF-8-SIG':
         return
+    print(f"Converting {os.path.basename(filename)} to UTF-8...")
     with open(filename, 'r', encoding='gb2312') as f:
         content_text = f.read()
     with open(filename, 'w', encoding='utf-8-sig') as f:
@@ -39,7 +40,6 @@ def convert_file_format(file, keyword_list):
     if os.path.isfile(file):
         for keyword in keyword_list:
             if (keyword in file):
-                print(f"Converting {os.path.basename(file)} to UTF-8...")
                 convert_to_utf8(file)
     elif os.path.isdir(file):
         for filename in os.listdir(file):
