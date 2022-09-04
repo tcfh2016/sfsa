@@ -1,107 +1,84 @@
-`stock-toolbox` is not one specified software，and no specified design purpose for
-this project, it is a learning practice for stock analyzing.
+## 简介
 
-This project is pure `python` and support the following basic functionalities:
+`financial-sheet-analyzer`是一个 `python`练习项目，它提供了对于财务报表的一些初步的数据分析，主要包括以下几个部分的功能：
 
-- Trade Analysis
-  - Pick up minimum price/maximum print from given trade records (by month)
-  - Store the result to .csv file
-  - Plotting
+1. 交易分析：提取按月的最大值、最小值，并绘图，同时将其保存在.csv文件中。
+2. 财报分析：
+  - 对于单只股票的数据，对资产负债表进行共同分析，利润表进行趋势分析，并绘图。
+  - 对于单只股票的数据，提供对于多只股票的对比。
 
-- Financial Statement Analysis
-  - For single stock
-    - common-size analysis, assert estimation from balance sheet and store result
-      in .csv file
-    - profit estimation from income statement and store result in .csv file
-    - Plotting    
-  - For multiply stocks
+## 提示
 
-Some reminders:
+- `...\financial-sheet-analyzer\src` 作为工作目录，所以需要切换到该目录下执行`start.py`
+- 使用该脚本之前必须先准备好原始数据表:对于交易分析，将交易数据放到`.\data\trade`目录下，对于财报分析，原始数据放到`.\data\report`。
 
-- The script is developed under `Windows` and only `A stocks` as objects.
-- Remember change to `...\stock-toolbox\src` which is used for working directory.
-- Raw data is needed before running analysis script:
-  - for trade analysis, copy raw data file into `.\data\trade`
-  - for report analysis, copy raw data file into `.\data\report`
+*后续可以考虑支持在线爬取数据。*
 
-# 1 Trade Analysis
+## 使用说明
 
-Only support the trade analysis for one stock.
+1）交易分析
 
-- Get the minimum and maximum price by month
+当前仅支持单只股票的交易分析，执行如下命令开始分析：
 
 ```
 python start.py -s 002352 --option trade
 ```
 
-- Specify time range
+指定交易数据的时间范围：
 
 ```
 python start.py -s 002352 -o trade --startdate 201501 --enddate 201808
 ```
 
-# 2 Report Analysis
+2）财报分析 —— 单只股票
 
-## 2.1 Single Stock
-
-### Balance Sheet
-
-There are two diagrams for balance sheet analysis:
-
-- common size analysis for assets and liabilities
-- the current asset presentation
+- 资产负债表
 
 ```
 python start.py -o balance -s 000898
 ```
 
+执行以上命令可以看到两幅图：资产和负债的共同分析图，以及当前资产状况：
+
+
 ![](./src/report/doc/balance_asset_liability.png)
 
 ![](./src/report/doc/current_asset.png)
 
-### Income Statement
 
-The common-size analysis has been dropped, and two aspects trends are given:
-
-- trends for operation revenue and several kinds of profits
-- trends for ratio of major profits and operation expense
-
-Execute following command in working directory to produce trend chart:
+- 利润表
 
 ```
 python start.py -s 002352 -o income
 ```
+
+执行以上命令进行利润表的分析，针对利润表没有使用共同分析，而是包括了“营收趋势”和“费用趋势”:
+
 
 ![](./src/report/doc/income_analysis.png)
 
 
-### Cash flow Statement
-
-1. Show net cash flow from "operating activities", "investing activities" and "
-financing activities", and compare "net cash flow from operating activities" with
- "net profit"
-
-![](./src/report/doc/cash_flow_analysis.png)
-
-2. Compare cash flow items with balance statement items
-
-- "cash received from the sale of goods and services" and "operating income"
-- "year-end cash and cash equivalent balance" and "interest-bearing liabilities"
-
-![](./src/report/doc/cash_flow_analysis_balance_items.png)
-
-Execute following command in working directory to produce trend chart:
+- 现金流量表
 
 ```
 python start.py -s 002352 -o income
 ```
 
-## 2.2 Multiply Stock
+现金流量表的分析包括：现金净流入趋势
 
-在对多只股票进行对比分析的时候，默认以最近一个会计年度的报表数据进行对比。目前支持针对多
-只股票的资产负债表项目和利润表项目进行对比，绘制图形从绝对值和百分比两个角度进行展现。
+![](./src/report/doc/cash_flow_analysis.png)
 
-### 资产负债表对比
+现金流和资产负债表的对比
+
+![](./src/report/doc/cash_flow_analysis_balance_items.png)
+
+
+2）财报分析 —— 多只股票
+
+
+在对多只股票进行对比分析的时候，默认以最近一个会计年度的报表数据进行对比。目前支持针对多只股票的资产负债表项目和利润表项目进行对比，绘制图形从绝对值和百分比两个角度进行展现。
+
+- 资产负债表对比
 
 ```
 python start.py -s 002352 600233 -o balance
@@ -109,7 +86,7 @@ python start.py -s 002352 600233 -o balance
 
 ![](muti_stock_asset.png)
 
-### 利润表对比
+- 利润表对比
 
 ```
 python start.py -s 002352 600233 -o income
