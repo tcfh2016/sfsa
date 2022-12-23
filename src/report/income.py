@@ -69,7 +69,7 @@ class IncomeStatementAnalyzer(analyzer.Analyzer):
                             '净利润(万元)'
                             ]]
         percent_items = percent_items[:].div(percent_items['营业收入(万元)'], axis=0)
-        percent_items = percent_items.ix[:, 1:]
+        percent_items = percent_items.iloc[:, 1:]
         print(percent_items)
 
         fig, axes = plt.subplots(nrows=2, ncols=1)
