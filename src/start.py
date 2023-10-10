@@ -1,10 +1,18 @@
 import os
+import logging
 import chardet
 import argparse
 import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
 import finance.irr as irr
 
+logging.basicConfig(
+    handlers=[
+                logging.FileHandler(filename="runtime.log", encoding='utf-8', mode='a+')
+             ],
+    format="%(asctime)s %(name)s:%(levelname)s:%(filename)s:%(lineno)d：%(message)s",
+    datefmt="%F %A %T",
+    level=logging.INFO)
 
 def detect_encoding(file):
     with open(file, 'rb') as f:
