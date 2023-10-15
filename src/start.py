@@ -4,7 +4,7 @@ import chardet
 import argparse
 import report.report_analyzer as report_analyzer
 import trade.trade_analyzer as trade_analyzer
-import finance.irr as irr
+import util.irr as irr
 
 logging.basicConfig(
     handlers=[

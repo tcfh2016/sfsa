@@ -1,0 +1,131 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import pandas as pd
+import sheet
+import analyzer
+
+class ZcfzbAnalyzer(analyzer.Analyzer):
+    def __init__(self, raw_data):
+        analyzer.Analyzer.__init__(self, raw_data)
+        self.read_data()
+
+        self.asset_df = np.NaN
+        self.debt_df = np.NaN
+        self.equity_df = np.NaN
+
+    def prepare(self):
+        # 滤除主要项目
+        self.overall_df = self._numberic_df[[
+            '流动资产合计',
+            '非流动资产合计',
+            '资产总计',
+            '流动负债合计',
+            '非流动负债合计',
+            '负债合计',
+            '所有者权益(或股东权益)合计']]
+
+        # 滤除资产部分的数据
+        self.asset_df = self._numberic_df[[
+            '货币资金',
+            '应收票据',
+            '应收账款',
+            '预付款项',
+            '其他应收款',
+            '存货',
+            '其他流动资产',
+            '长期股权投资',
+            '其他长期投资',
+            '固定资产净额',
+            '在建工程',
+            '无形资产',
+            '商誉',
+            '递延所得税资产',
+            '其他非流动资产']]
+        # print(self.asset_df)
+
+        # 滤除负债部分的数据
+        self.debt_df = self._numberic_df[[
+            '负债合计',
+            '短期借款',
+            '应付票据',
+            '应付账款',
+            '预收款项',
+            '应付职工薪酬',
+            '应付利息',
+            '其他应付款',
+            '一年内到期的非流动负债',
+            '其他流动负债',
+            '长期借款',
+            '应付债券',
+            '长期递延收益',
+            '递延所得税负债',
+            '其他非流动负债']]
+        # print(self.debt_df)
+
+        # 滤除股东权益部分的数据
+        self.equity_df = self._numberic_df.loc[:, '实收资本(或股本)':'所有者权益(或股东权益)合计']
+        # print(self.equity_df)
+
+    def plot_asset(self):
+        plt.rcParams['axes.unicode_minus'] = False
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+
+        # 选择资产部分超过一定百分比的项目，先需要进行转置（T）来方便删除
+        asset_rate = self.asset_df[:].div(self._numberic_df['资产总计'], axis=0).T      
+        asset_rate = asset_rate[asset_rate.iloc[:, 0] > 0.05].copy()
+        asset_rate = asset_rate.T
+        print(asset_rate)
+
+        # 选择负债部分超过一定百分比的项目
+        debt_rate = self.debt_df[:].div(self._numberic_df['资产总计'], axis=0).T
+        debt_rate = debt_rate[debt_rate.iloc[:, 0] > 0.05].copy()
+        debt_rate = debt_rate.T
+        print(debt_rate)
+
+        fig, axes = plt.subplots(nrows=2, ncols=1)
+        ap = asset_rate.plot(ax=axes[0], figsize=(8,6))
+        ap.set_ylabel("百分比")
+        ap_vals = ap.get_yticks()
+        ap.set_yticklabels(['{:,.2%}'.format(x) for x in ap_vals])
+
+        dp = debt_rate.plot(ax=axes[1], figsize=(8,6))        
+        dp.set_ylabel("百分比")
+        dp_vals = dp.get_yticks()
+        dp.set_yticklabels(['{:,.2%}'.format(x) for x in dp_vals])
+
+    def estimate_asset(self):
+        plt.rcParams['axes.unicode_minus'] = False
+        plt.rcParams['font.sans-serif'] = ['SimHei']
+
+        # 1.流动资产检查
+        current_asset = self._numberic_df[[
+            '货币资金',
+            '存货',
+            '流动资产合计',
+            '流动负债合计']]
+        # 2.流动资产价值与账面价值
+        current_asset_value = pd.DataFrame(self._numberic_df['实收资本(或股本)'])
+        current_asset_value['每股流动资产价值'] = (self._numberic_df['流动资产合计'] - self._numberic_df['流动负债合计']) / self._numberic_df['实收资本(或股本)']
+        book_value = self._numberic_df['归属于母公司股东权益合计'] - self._numberic_df['无形资产'] - self._numberic_df['商誉']
+        current_asset_value['每股账面价值'] = book_value / self._numberic_df['实收资本(或股本)']
+        del current_asset_value['实收资本(或股本)']
+
+        fig, axes = plt.subplots(nrows=2, ncols=1)        
+        cap = current_asset.plot(ax=axes[0], figsize=(8,6))
+        cap.set_ylabel("数值")
+        print(current_asset_value)
+
+        cavp = current_asset_value.plot(ax=axes[1], figsize=(8,6))
+        cavp.set_xlabel("日期")
+        cavp.set_ylabel("数值")
+        plt.show()
+
+    def analyze(self):
+        self.prepare()
+        self.plot_asset()
+        self.estimate_asset()
+
+if __name__ == "__main__":
+    code = '002304' # 洋河股份
+    zcfzb = ZcfzbAnalyzer(sheet.Sheet(code).zcfzb)
+    zcfzb.analyze()

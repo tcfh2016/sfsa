@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 
 plt.rcParams['font.sans-serif'] = ['SimHei']
 
-class FinancialReport(object):
+class Sheet(object):
     def __init__(self, stock):
         self._stock = stock
         self._date_yearly = ['']
@@ -13,8 +13,25 @@ class FinancialReport(object):
         self._lrb = ak.stock_financial_report_sina(stock=stock, symbol="利润表")
         self._xjllb = ak.stock_financial_report_sina(stock=stock, symbol="现金流量表")
     
+    @property
+    def zcfzb(self):
+        return self._zcfzb
+
+    @property
+    def lrb(self):
+        return self._lrb
+    
+    @property
+    def xjllb(self):
+        return self._xjllb
+
+    def overview(self):
+        self.extract_yearly_zcfzb()
+        self.extract_yearly_lrb()
+        self.extract_yearly_xjllb()
+
     def extract_yearly_zcfzb(self):
-        #print(self._zcfzb.columns)
+        print(self._zcfzb.columns.values)
         check_fields = [
             '报告日', 
             '资产总计', 
@@ -29,7 +46,7 @@ class FinancialReport(object):
         print(zcfzb_df)
 
     def extract_yearly_lrb(self):
-        #print(self._lrb.columns)
+        print(self._lrb.columns.values)
         check_fields = [
             '报告日', 
             '营业总收入', 
@@ -45,7 +62,7 @@ class FinancialReport(object):
         print(lrb_df)
 
     def extract_yearly_xjllb(self):
-        #print(self._xjllb.columns)
+        print(self._xjllb.columns.values)
         check_fields = [
             '报告日', 
             '经营活动产生的现金流量净额', 
@@ -67,8 +84,6 @@ if __name__ == "__main__":
     #code = '000568' # 泸州老窖 
     #code = '600809' # 山西汾酒
     code = '000596' # 古井贡
-
-    finalcial_report = FinancialReport(code)
-    finalcial_report.extract_yearly_zcfzb()
-    finalcial_report.extract_yearly_lrb()
-    finalcial_report.extract_yearly_xjllb()
+    
+    sheets = Sheet(code).overview()
+    
