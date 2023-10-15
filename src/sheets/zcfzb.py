@@ -2,12 +2,11 @@ import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
 import sheet
-import analyzer
+from sheet import convert_to_numeric
 
-class ZcfzbAnalyzer(analyzer.Analyzer):
+class ZcfzbAnalyzer():
     def __init__(self, raw_data):
-        analyzer.Analyzer.__init__(self, raw_data)
-        self.read_data()
+        self._numberic_df = convert_to_numeric(raw_data) 
 
         self.asset_df = np.NaN
         self.debt_df = np.NaN
@@ -115,8 +114,7 @@ class ZcfzbAnalyzer(analyzer.Analyzer):
         cap.set_ylabel("数值")
         print(current_asset_value)
 
-        cavp = current_asset_value.plot(ax=axes[1], figsize=(8,6))
-        cavp.set_xlabel("日期")
+        cavp = current_asset_value.plot(ax=axes[1], figsize=(8,6))        
         cavp.set_ylabel("数值")
         plt.show()
 

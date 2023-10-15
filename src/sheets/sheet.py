@@ -1,8 +1,24 @@
 import akshare as ak
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 
 plt.rcParams['font.sans-serif'] = ['SimHei']
+
+# 构建全新的年度数据用于计算
+# 1. 将没有3个有效数据（非NaN）的列视作无效列，丢弃 - drop
+# 2. 替换NaN为0，为后续数据统一类型做准备
+# 3. 将所有值转换为 float格式
+def convert_to_numeric(raw_df):
+    #df = raw_df.dropna(axis=1, thresh=3).copy()
+    print(raw_df.columns.values)
+    raw_df = raw_df.set_index('报告日')
+    df = raw_df.loc[:, ~raw_df.columns.isin(['数据源', '是否审计', '公告日期', '币种', '类型', '更新日期'])].copy()    
+    df.fillna(0, inplace=True)
+    
+    for col in df:
+        df[col] = pd.to_numeric(df[col])
+    return df
 
 class Sheet(object):
     def __init__(self, stock):
