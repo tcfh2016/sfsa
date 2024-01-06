@@ -11,7 +11,7 @@ plt.rcParams['font.sans-serif'] = ['SimHei']
 # 3. 将所有值转换为 float格式
 def convert_to_numeric(raw_df):
     #df = raw_df.dropna(axis=1, thresh=3).copy()
-    print(raw_df.columns.values)
+    #print(raw_df.columns.values)
     raw_df = raw_df.set_index('报告日')
     df = raw_df.loc[:, ~raw_df.columns.isin(['数据源', '是否审计', '公告日期', '币种', '类型', '更新日期'])].copy()    
     df.fillna(0, inplace=True)

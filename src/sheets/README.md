@@ -1,4 +1,4 @@
-# Report Analyzing Functionalities Design
+## Report Analyzing Functionalities Design
 
 Different functionalities are applied to the analysis of different sheets: balance
 sheet, income statement and cash flow statement, there are some common operations

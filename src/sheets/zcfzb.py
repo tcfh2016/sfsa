@@ -1,16 +1,20 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-import sheet
-from sheet import convert_to_numeric
+from . import sheet
+#from sheet import convert_to_numeric
 
 class ZcfzbAnalyzer():
     def __init__(self, raw_data):
-        self._numberic_df = convert_to_numeric(raw_data) 
+        self._numberic_df = sheet.convert_to_numeric(raw_data) 
 
         self.asset_df = np.NaN
         self.debt_df = np.NaN
         self.equity_df = np.NaN
+
+    @property
+    def numberic_df(self):
+        return self._numberic_df
 
     def prepare(self):
         # 滤除主要项目

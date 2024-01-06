@@ -1,7 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-import sheet
-from sheet import convert_to_numeric
+from . import sheet
 
 class XjllbAnalyzer():
     def __init__(self, raw_xjllb, raw_lrb):                
@@ -16,6 +15,10 @@ class XjllbAnalyzer():
             '现金及现金等价物净增加额']]
         self._df['净利润'] = self._income_df['净利润']
 
+    @property
+    def numberic_df(self):
+        return self._cashflow_df
+    
     def plot(self):
         plt.rcParams['axes.unicode_minus'] = False
         plt.rcParams['font.sans-serif'] = ['SimHei']
