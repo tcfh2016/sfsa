@@ -10,8 +10,6 @@ plt.rcParams['font.sans-serif'] = ['SimHei']
 # 2. 替换NaN为0，为后续数据统一类型做准备
 # 3. 将所有值转换为 float格式
 def convert_to_numeric(raw_df):
-    #df = raw_df.dropna(axis=1, thresh=3).copy()
-    #print(raw_df.columns.values)
     raw_df = raw_df.set_index('报告日')
     df = raw_df.loc[:, ~raw_df.columns.isin(['数据源', '是否审计', '公告日期', '币种', '类型', '更新日期'])].copy()    
     df.fillna(0, inplace=True)
@@ -19,6 +17,27 @@ def convert_to_numeric(raw_df):
     for col in df:
         df[col] = pd.to_numeric(df[col])
     return df
+
+def plot(values, percent = False):
+    fig, axes = plt.subplots(nrows=2, ncols=2, sharey=True)
+    df = values.T
+
+    s_1st = df.loc[:, df.columns.str.contains('0331')].T
+    plot = s_1st.plot(ax=axes[0, 0], figsize=(8, 6))
+    
+    s_2nd = df.loc[:, df.columns.str.contains('0630')].T
+    plot = s_2nd.plot(ax=axes[0, 1], figsize=(8, 6))
+
+    s_3rd = df.loc[:, df.columns.str.contains('0930')].T
+    plot = s_3rd.plot(ax=axes[1, 0], figsize=(8, 6))
+
+    s_4st = df.loc[:, df.columns.str.contains('1231')].T
+    plot = s_4st.plot(ax=axes[1, 1], figsize=(8, 6))
+    plot.legend(s_4st.columns)
+
+    if percent:
+        vals = plot.get_yticks()
+        plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
 
 class Sheet(object):
     def __init__(self, stock):
@@ -92,7 +111,7 @@ class Sheet(object):
         xjllb_df = xjllb_df.apply(lambda x : np.float64(x) / 100000000)
         xjllb_df.plot(figsize=(10,5))
         print(xjllb_df)
-
+        
 if __name__ == "__main__":
     #code = '002304' # 洋河股份
     #code = '600519' # 贵州茅台

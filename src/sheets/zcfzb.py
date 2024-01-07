@@ -1,8 +1,8 @@
 import numpy as np
 import matplotlib.pyplot as plt
 import pandas as pd
-from . import sheet
-#from sheet import convert_to_numeric
+
+import sheet
 
 class ZcfzbAnalyzer():
     def __init__(self, raw_data):

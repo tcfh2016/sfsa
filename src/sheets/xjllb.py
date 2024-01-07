@@ -1,11 +1,12 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from . import sheet
+
+import sheet
 
 class XjllbAnalyzer():
     def __init__(self, raw_xjllb, raw_lrb):                
-        self._cashflow_df = convert_to_numeric(raw_xjllb)
-        self._income_df = convert_to_numeric(raw_lrb)
+        self._cashflow_df = sheet.convert_to_numeric(raw_xjllb)
+        self._income_df = sheet.convert_to_numeric(raw_lrb)
 
         self._df = self._cashflow_df[[
             '销售商品、提供劳务收到的现金',
@@ -49,6 +50,6 @@ class XjllbAnalyzer():
 
 if __name__ == "__main__":
     code = '002304' # 洋河股份
-    sheet = sheet.Sheet(code)
-    zcfzb = XjllbAnalyzer(sheet.xjllb, sheet.lrb)
-    zcfzb.analyze()
+    s = sheet.Sheet(code)
+    xjllb = XjllbAnalyzer(s.xjllb, s.lrb)
+    xjllb.analyze()

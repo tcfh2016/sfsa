@@ -35,27 +35,6 @@ class LrbAnalyzer():
     def numberic_df(self):
         return self._income_df
     
-    def plot_df(self, values, percent = False):
-        fig, axes = plt.subplots(nrows=2, ncols=2, sharey=True)
-        df = values.T
-
-        s_1st = df.loc[:, df.columns.str.contains('0331')].T
-        plot = s_1st.plot(ax=axes[0, 0], figsize=(8, 6))
-        
-        s_2nd = df.loc[:, df.columns.str.contains('0630')].T
-        plot = s_2nd.plot(ax=axes[0, 1], figsize=(8, 6))
-
-        s_3rd = df.loc[:, df.columns.str.contains('0930')].T
-        plot = s_3rd.plot(ax=axes[1, 0], figsize=(8, 6))
-
-        s_4st = df.loc[:, df.columns.str.contains('1231')].T
-        plot = s_4st.plot(ax=axes[1, 1], figsize=(8, 6))
-        plot.legend(s_4st.columns)
-
-        if percent:
-            vals = plot.get_yticks()
-            plot.set_yticklabels(['{:,.2%}'.format(x) for x in vals])
-
     def plot(self):
         plt.rcParams['font.sans-serif'] = ['SimHei']
         df = self._df.copy()
@@ -72,7 +51,7 @@ class LrbAnalyzer():
             '核心利润',
             '营业利润',
             '净利润']]
-        self.plot_df(value_items)        
+        sheet.plot(value_items)        
 
         # 2. 百分比
         #   - 毛利率
@@ -88,7 +67,7 @@ class LrbAnalyzer():
             '净利润']]
         percent_items = percent_items[:].div(percent_items['营业收入'], axis=0)
         percent_items = percent_items.iloc[:, 1:]        
-        self.plot_df(percent_items, True)
+        sheet.plot(percent_items, True)
 
     def analyze(self):
         self.plot()
