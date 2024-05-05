@@ -31,19 +31,13 @@ class XjllbAnalyzer():
             '筹资活动产生的现金流量净额',
             '现金及现金等价物净增加额']]
         print(net_items)
+        sheet.plot(net_items)
 
         net_income_items = self._df[[
             '经营活动产生的现金流量净额',
             '净利润']]
         print(net_income_items)
-
-        fig, axes = plt.subplots(nrows=2, ncols=1)
-        net_plot = net_items.plot(ax=axes[0], figsize=(8, 6))
-        net_plot.set_ylabel("数值")
-
-        netincome_plot = net_income_items.plot(ax=axes[1], figsize=(8, 6))
-        netincome_plot.set_ylabel("数值")
-        # plt.show()
+        sheet.plot(net_income_items)
 
     def analyze(self):        
         self.plot()
