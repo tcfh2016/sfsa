@@ -121,10 +121,13 @@ class ZcfzbAnalyzer():
 
     def analyze(self):
         self.prepare()
-        #self.plot_asset()
+        self.plot_asset()
         self.estimate_asset()
 
 if __name__ == "__main__":
-    code = '002304' # 洋河股份
+    #code = '002304' # 洋河股份
+    #code = '002236' # 大华股份
+    code = '002415' # 海康威视
+    
     zcfzb = ZcfzbAnalyzer(sheet.Sheet(code).zcfzb)
     zcfzb.analyze()
