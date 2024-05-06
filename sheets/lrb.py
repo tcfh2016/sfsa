@@ -1,8 +1,14 @@
+import sys
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 
 import sheet
+
+if sys.platform.startswith('win'):
+    plt.rcParams['font.sans-serif'] = ['SimHei']
+else:
+    plt.rcParams['font.sans-serif'] = ['Arial Unicode MS']
 
 pd.set_option('display.max_rows', 100)
 pd.set_option('display.max_columns', 100)
@@ -36,7 +42,6 @@ class LrbAnalyzer():
         return self._income_df
     
     def plot(self):
-        plt.rcParams['font.sans-serif'] = ['SimHei']
         df = self._df.copy()
 
         df['营业费用'] = df['销售费用'] + df['管理费用'] + df['财务费用']
@@ -74,7 +79,7 @@ class LrbAnalyzer():
 
 if __name__ == "__main__":
     #code = '002304' # 洋河股份
-    #code = '002236' # 大华股份
-    code = '002415' # 海康威视
+    code = '002236' # 大华股份
+    #code = '002415' # 海康威视
     zcfzb = LrbAnalyzer(sheet.Sheet(code).lrb)
     zcfzb.analyze()
