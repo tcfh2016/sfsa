@@ -118,7 +118,8 @@ if __name__ == "__main__":
     #code = '000858' # 五粮液
     #code = '000568' # 泸州老窖 
     #code = '600809' # 山西汾酒
-    code = '000596' # 古井贡
+    #code = '000596' # 古井贡
+    code = '300760' # 迈瑞医疗
     
     sheets = Sheet(code).overview()
     

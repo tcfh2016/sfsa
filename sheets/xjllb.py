@@ -43,7 +43,8 @@ class XjllbAnalyzer():
         self.plot()
 
 if __name__ == "__main__":
-    code = '002304' # 洋河股份
+    #code = '002304' # 洋河股份
+    code = '300760' # 迈瑞医疗
     s = sheet.Sheet(code)
     xjllb = XjllbAnalyzer(s.xjllb, s.lrb)
     xjllb.analyze()

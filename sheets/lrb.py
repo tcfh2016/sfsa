@@ -75,6 +75,8 @@ class LrbAnalyzer():
 if __name__ == "__main__":
     #code = '002304' # 洋河股份
     #code = '002236' # 大华股份
-    code = '002415' # 海康威视
+    #code = '002415' # 海康威视
+    #code = '603259' # 药明康德
+    code = '300760' # 迈瑞医疗
     zcfzb = LrbAnalyzer(sheet.Sheet(code).lrb)
     zcfzb.analyze()
