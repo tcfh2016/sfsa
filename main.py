@@ -1,6 +1,8 @@
 import tkinter as tk
 import akshare as ak
 
+from tkinter import ttk
+
 def query():
     stock = stock_entry.get()
     if stock.isnumeric():
@@ -11,8 +13,8 @@ def query():
         for i in range(len(stock_individual_info_em_df)):
             for j in range(2):
                 e = tk.Entry(master=label_info, relief=tk.GROOVE)
-                e.grid(row=i, column=j, sticky="nsew")
-                e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i][j]}")
+                e.grid(row=i, column=j, sticky="ew")
+                e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i, j]}")
 
     else:
         stock_zh_ah_name_df = ak.stock_zh_ah_name()
@@ -24,6 +26,7 @@ window.rowconfigure([0], minsize=100, weight=1)
 window.rowconfigure([1], minsize=300, weight=1)
 window.columnconfigure(1, minsize=800, weight=1)
 
+# 左侧列：按钮区
 option_frame = tk.Frame(master=window)
 option_frame.grid(row=0, column=0, sticky="n")
 
@@ -38,6 +41,7 @@ lrb_button.grid(row=1, column=1, sticky="w")
 xjllb_button = tk.Button(master=option_frame, text="现金流量表分析", width=15)
 xjllb_button.grid(row=1, column=2, sticky="w")
 
+# 左侧列：信息区
 info_frame = tk.Frame(master=window)
 info_frame.grid(row=1, column=0, sticky="n")
 
@@ -45,5 +49,11 @@ label = tk.Label(master=info_frame, text="股票信息")
 label.grid(row=0, column=0, sticky="n")
 label_info = tk.Label(master=info_frame, text="")
 label_info.grid(row=1, column=0)
+
+# 分割线
+separator = ttk.Separator(master=window, orient='vertical')
+separator.grid(row=0, column=1, rowspan=2, sticky="nswe")
+
+# 右侧列：估值区
 
 window.mainloop()
