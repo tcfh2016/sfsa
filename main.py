@@ -1,7 +1,31 @@
 import tkinter as tk
 import akshare as ak
+import pandas as pd
+import matplotlib.pyplot as plt
 
 from tkinter import ttk
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+def plot_eva():
+    figure = Figure(figsize=(8, 4), dpi=100)
+    plot = figure.add_subplot(1, 1, 1)
+    plot_secondary = plot.twinx()
+
+    canvas = FigureCanvasTkAgg(figure, window)
+    canvas.get_tk_widget().grid(row=0, column=1, rowspan=2)
+    
+    indicator_dfs = []
+    for ind in ['总市值', '市盈率(TTM)', '市净率']:
+        df = ak.stock_zh_valuation_baidu(symbol='603259', indicator=ind, period='全部')
+        df = df.set_index('date').rename(columns={'value':ind})
+        indicator_dfs.append(df)
+    df = pd.concat(indicator_dfs, axis=1)
+    print(df.sample(5))
+
+    plot.plot(df.index, df['总市值'])
+    plot_secondary.plot(df.index, df['市盈率(TTM)'])
+    plot_secondary.plot(df.index, df['市净率'])
 
 def query():
     stock = stock_entry.get()
@@ -16,6 +40,7 @@ def query():
                 e.grid(row=i, column=j, sticky="ew")
                 e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i, j]}")
 
+        plot_eva()
     else:
         stock_zh_ah_name_df = ak.stock_zh_ah_name()
         print(stock_zh_ah_name_df)
