@@ -1,20 +1,14 @@
 import tkinter as tk
 import akshare as ak
 import pandas as pd
+import matplotlib
 import matplotlib.pyplot as plt
 
 from tkinter import ttk
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 
-def plot_eva():
-    figure = Figure(figsize=(8, 4), dpi=100)
-    plot = figure.add_subplot(1, 1, 1)
-    plot_secondary = plot.twinx()
-
-    canvas = FigureCanvasTkAgg(figure, window)
-    canvas.get_tk_widget().grid(row=0, column=1, rowspan=2)
-    
+def plot_eva():    
     indicator_dfs = []
     for ind in ['总市值', '市盈率(TTM)', '市净率']:
         df = ak.stock_zh_valuation_baidu(symbol='603259', indicator=ind, period='全部')
@@ -23,9 +17,19 @@ def plot_eva():
     df = pd.concat(indicator_dfs, axis=1)
     print(df.sample(5))
 
-    plot.plot(df.index, df['总市值'])
-    plot_secondary.plot(df.index, df['市盈率(TTM)'])
-    plot_secondary.plot(df.index, df['市净率'])
+    plt.rcParams['font.family']=['STFangsong']
+    figure = plt.figure(figsize=(8, 4), dpi=100)
+    canvas = FigureCanvasTkAgg(figure, window)
+    canvas.get_tk_widget().grid(row=0, column=1, rowspan=2)
+
+    ax1 = figure.add_subplot(1, 1, 1)
+    plt.plot(df.index, df['总市值'], label='总市值')
+    plt.legend(loc=0, fontsize="x-large")
+
+    ax2 = ax1.twinx()
+    plt.plot(df.index, df['市盈率(TTM)'], label='市盈率(TTM)')
+    plt.plot(df.index, df['市净率'], label='市净率')
+    plt.legend(loc=8)
 
 def query():
     stock = stock_entry.get()
