@@ -6,35 +6,39 @@ import matplotlib.pyplot as plt
 
 from tkinter import ttk
 from matplotlib.figure import Figure
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
-def plot_eva():    
+def plot_eva(stock_symbol): 
     indicator_dfs = []
     for ind in ['总市值', '市盈率(TTM)', '市净率']:
-        df = ak.stock_zh_valuation_baidu(symbol='603259', indicator=ind, period='全部')
+        df = ak.stock_zh_valuation_baidu(symbol=stock_symbol, indicator=ind, period='全部')
         df = df.set_index('date').rename(columns={'value':ind})
         indicator_dfs.append(df)
     df = pd.concat(indicator_dfs, axis=1)
     print(df.sample(5))
 
     plt.rcParams['font.family']=['STFangsong']
-    figure = plt.figure(figsize=(8, 4), dpi=100)
+    figure = Figure(figsize=(8, 4), dpi=100)
+    ax1 = figure.add_subplot()
+    ax1.plot(df.index, df['总市值'], label='总市值')
+    ax1.legend(loc=3)
+
+    ax2 = ax1.twinx()
+    ax2.plot(df.index, df['市盈率(TTM)'], 'b-', label='市盈率(TTM)')
+    ax2.plot(df.index, df['市净率'], 'g-', label='市净率')
+    ax2.legend(loc=1)
+
     canvas = FigureCanvasTkAgg(figure, window)
     canvas.get_tk_widget().grid(row=0, column=1, rowspan=2)
 
-    ax1 = figure.add_subplot(1, 1, 1)
-    plt.plot(df.index, df['总市值'], label='总市值')
-    plt.legend(loc=0, fontsize="x-large")
-
-    ax2 = ax1.twinx()
-    plt.plot(df.index, df['市盈率(TTM)'], label='市盈率(TTM)')
-    plt.plot(df.index, df['市净率'], label='市净率')
-    plt.legend(loc=8)
+    toolbar = NavigationToolbar2Tk(canvas, window, pack_toolbar=False)
+    toolbar.update()
+    toolbar.grid(row=2, column=1)
 
 def query():
     stock = stock_entry.get()
     if stock.isnumeric():
-        stock_individual_info_em_df = ak.stock_individual_info_em(symbol="000001")
+        stock_individual_info_em_df = ak.stock_individual_info_em(symbol=stock)
         print(stock_individual_info_em_df)
         label_info['text'] = stock_individual_info_em_df
 
@@ -44,7 +48,7 @@ def query():
                 e.grid(row=i, column=j, sticky="ew")
                 e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i, j]}")
 
-        plot_eva()
+        plot_eva(stock)
     else:
         stock_zh_ah_name_df = ak.stock_zh_ah_name()
         print(stock_zh_ah_name_df)
