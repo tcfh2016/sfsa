@@ -35,23 +35,31 @@ def plot_eva(stock_symbol):
     toolbar.update()
     toolbar.grid(row=2, column=1)
 
+def display_info(symbol):
+    stock_individual_info_em_df = ak.stock_individual_info_em(symbol=symbol)
+    print(stock_individual_info_em_df)
+    label_info['text'] = stock_individual_info_em_df
+
+    for i in range(len(stock_individual_info_em_df)):
+        for j in range(2):
+            e = tk.Entry(master=label_info, relief=tk.GROOVE)
+            e.grid(row=i, column=j, sticky="ew")
+            e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i, j]}")
+
 def query():
     stock = stock_entry.get()
-    if stock.isnumeric():
-        stock_individual_info_em_df = ak.stock_individual_info_em(symbol=stock)
-        print(stock_individual_info_em_df)
-        label_info['text'] = stock_individual_info_em_df
-
-        for i in range(len(stock_individual_info_em_df)):
-            for j in range(2):
-                e = tk.Entry(master=label_info, relief=tk.GROOVE)
-                e.grid(row=i, column=j, sticky="ew")
-                e.insert(tk.END, f"{stock_individual_info_em_df.iloc[i, j]}")
-
+    if stock.isnumeric():        
+        display_info(stock)
         plot_eva(stock)
     else:
-        stock_zh_ah_name_df = ak.stock_zh_ah_name()
-        print(stock_zh_ah_name_df)
+        df = ak.stock_zh_a_spot_em()
+        match = df[df['名称'].str.contains(stock)].index.values
+        if match.size > 0:
+            symbol = df['代码'].iloc[match[0]]
+            display_info(symbol)
+            plot_eva(symbol)
+        else:
+            print(f"Can't find {stock}")
 
 window = tk.Tk()
 window.title("Stock Financial Sheet Analyzer")
